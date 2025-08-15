@@ -1,0 +1,887 @@
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Integrador - Linguagem de Programação Educacional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .syntax-example {
+            background-color: #f8fafc;
+            border-left: 4px solid #4f46e5;
+            border-radius: 0 8px 8px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .syntax-example:hover {
+            background-color: #f1f5f9;
+            border-left-color: #7c3aed;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background-color: #4f46e5;
+            border-radius: 50%;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 1.5rem;
+            width: 2px;
+            height: calc(100% - 1rem);
+            background-color: #e5e7eb;
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .code-block {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: #e2e8f0;
+        }
+        
+        .keyword {
+            color: #fbbf24;
+        }
+        
+        .string {
+            color: #34d399;
+        }
+        
+        .comment {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        
+        .print-only {
+            display: none;
+        }
+        
+        @media print {
+            .no-print {
+                display: none;
+            }
+            
+            .print-only {
+                display: block;
+            }
+            
+            .page-break {
+                page-break-before: always;
+            }
+            
+            body {
+                background: white !important;
+            }
+            
+            .gradient-bg {
+                background: #4f46e5 !important;
+                color: white !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-8 no-print">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d8924102-c49f-40bb-add0-c2cc6bc50e15.png" alt="Logo da Universidade de Marília UNIMAR com escudo azul e dourado" class="mx-auto mb-4" />
+                <h1 class="text-4xl font-bold mb-2">Projeto Integrador</h1>
+                <h2 class="text-2xl font-light">Linguagem de Programação Educacional</h2>
+                <p class="text-lg mt-4 opacity-90">Universidade de Marília - UNIMAR</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Capa do Projeto -->
+        <section class="bg-white rounded-lg shadow-lg p-8 mb-8">
+            <div class="text-center border-b pb-6 mb-6">
+                <div class="print-only mb-6">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/299e4929-d41b-4d60-a636-6f11186861f4.png" alt="Logo da Universidade de Marília UNIMAR com escudo azul e dourado" class="mx-auto mb-4" />
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">UNIVERSIDADE DE MARÍLIA - UNIMAR</h1>
+                    <h2 class="text-xl text-gray-600 mb-4">Projeto Integrador</h2>
+                </div>
+                
+                <h1 class="text-3xl font-bold text-gray-800 mb-4">BrasilScript</h1>
+                <h2 class="text-xl text-gray-600 mb-6">Linguagem de Programação Educacional em Português Brasileiro</h2>
+                
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/17c86004-ca38-42c3-b70b-61a308b57a61.png" alt="Ilustração colorida mostrando crianças brasileiras aprendendo programação em computadores, com elementos visuais da bandeira do Brasil e código em português na tela" class="w-full rounded-lg mb-4" />
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Equipe de Desenvolvimento</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                            <strong>Breno</strong> - Gerente de Projeto e Desenvolvedor de Sintaxe
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                            <strong>Caio</strong> - Desenvolvedor de Interpretador e Arquitetura
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
+                            <strong>Leandro</strong> - Documentador e Designer de Interface
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
+                            <strong>Gabriel</strong> - Documentador e Designer de Interface
+                        </li>
+
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                            <strong>Gabriel</strong> - Especialista em Testes e Quality Assurance
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Informações do Projeto</h3>
+                    <div class="space-y-2 text-gray-600">
+                        <p><strong>Período:</strong> 15 semanas (Entrega parcial na 6ª semana)</p>
+                        <p><strong>Instituição:</strong> Universidade de Marília - UNIMAR</p>
+                        <p><strong>Curso:</strong> Ciência da Computação</p>
+                        <p><strong>Data de Início:</strong> Março 2024</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página 1: Introdução e Visão Geral -->
+        <section class="bg-white rounded-lg shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-blue-500 pb-2">1. Introdução e Visão Geral do Projeto</h2>
+            
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">1.1 Contexto e Motivação</h3>
+                <p class="text-gray-600 mb-4">
+                    O ensino de programação no Brasil enfrenta desafios significativos, especialmente no que se refere à barreira linguística. 
+                    A maioria das linguagens de programação utiliza palavras-chave em inglês, criando uma camada adicional de complexidade 
+                    para estudantes brasileiros que estão iniciando sua jornada na programação. Este projeto surge da necessidade de criar 
+                    uma ferramenta educacional que seja verdadeiramente acessível e inclusiva.
+                </p>
+                
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                    <p class="text-blue-800">
+                        <strong>Problema Identificado:</strong> Segundo pesquisas do IBGE, apenas 5% da população brasileira 
+                        possui fluência em inglês, criando uma barreira significativa no aprendizado de programação tradicional.
+                    </p>
+                </div>
+                
+                <p class="text-gray-600 mb-4">
+                    A <strong>BrasilScript</strong> foi concebida como uma linguagem de programação que combina a simplicidade do Python 
+                    com a naturalidade do português brasileiro, oferecendo uma ponte acessível entre o pensamento lógico humano 
+                    e a programação de computadores.
+                </p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">1.2 Objetivos do Projeto</h3>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="feature-card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg">
+                        <h4 class="font-semibold text-blue-800 mb-3">Objetivos Principais</h4>
+                        <ul class="space-y-2 text-blue-700">
+                            <li>✓ Desenvolver uma linguagem 100% em português brasileiro</li>
+                            <li>✓ Criar sintaxe mais simples que Python</li>
+                            <li>✓ Facilitar o aprendizado de lógica de programação</li>
+                            <li>✓ Promover inclusão digital no Brasil</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-card bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg">
+                        <h4 class="font-semibold text-green-800 mb-3">Objetivos Específicos</h4>
+                        <ul class="space-y-2 text-green-700">
+                            <li>✓ Implementar interpretador funcional</li>
+                            <li>✓ Criar documentação educacional completa</li>
+                            <li>✓ Desenvolver ambiente de desenvolvimento integrado</li>
+                            <li>✓ Estabelecer base para futuras expansões</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">1.3 Público-Alvo</h3>
+                
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2de3f1a3-ca5d-4ee1-bd0b-5b1c9ce2eb2b.png" alt="Estudantes do ensino fundamental e médio brasileiros usando computadores em sala de aula moderna" class="w-full rounded-lg mb-3" />
+                        <h4 class="font-semibold text-gray-800 mb-2">Estudantes (12-18 anos)</h4>
+                        <p class="text-sm text-gray-600">Ensino fundamental e médio, primeira experiência com programação</p>
+                    </div>
+                    
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/71e5d6da-fbe5-480d-9805-6bb2897c9c5c.png" alt="Professores brasileiros ensinando programação com materiais didáticos em português em ambiente escolar" class="w-full rounded-lg mb-3" />
+                        <h4 class="font-semibold text-gray-800 mb-2">Educadores</h4>
+                        <p class="text-sm text-gray-600">Professores buscando ferramentas pedagógicas acessíveis</p>
+                    </div>
+                    
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/fe430a1d-0ebe-4994-970a-13a7a30db152.png" alt="Adultos brasileiros aprendendo programação básica em curso de inclusão digital com interface em português" class="w-full rounded-lg mb-3" />
+                        <h4 class="font-semibold text-gray-800 mb-2">Iniciantes Adultos</h4>
+                        <p class="text-sm text-gray-600">Pessoas em transição de carreira ou interesse pessoal</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página 2: Especificação da Linguagem -->
+        <section class="page-break bg-white rounded-lg shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-green-500 pb-2">2. Especificação da Linguagem BrasilScript</h2>
+            
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">2.1 Filosofia e Princípios de Design</h3>
+                
+                <div class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-lg mb-4">
+                    <h4 class="font-semibold text-gray-800 mb-3">Princípios Fundamentais</h4>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-gray-700 mb-2"><strong>Simplicidade:</strong> Código legível como português natural</p>
+                            <p class="text-gray-700 mb-2"><strong>Clareza:</strong> Intenção do código óbvia à primeira vista</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-700 mb-2"><strong>Acessibilidade:</strong> Sem barreiras linguísticas</p>
+                            <p class="text-gray-700 mb-2"><strong>Progressividade:</strong> Crescimento gradual de complexidade</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">2.2 Sintaxe e Estruturas Básicas</h3>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">Declaração de Variáveis</h4>
+                        <div class="syntax-example p-4">
+                            <div class="code-block p-3 rounded">
+                                <div class="text-sm font-mono">
+                                    <span class="comment"># BrasilScript</span><br>
+                                    <span class="keyword">declarar</span> nome <span class="keyword">como</span> <span class="string">"João"</span><br>
+                                    <span class="keyword">declarar</span> idade <span class="keyword">como</span> 15<br>
+                                    <span class="keyword">declarar</span> altura <span class="keyword">como</span> 1.75
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-600 mt-2">Comparação Python: name = "João"</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">Entrada e Saída</h4>
+                        <div class="syntax-example p-4">
+                            <div class="code-block p-3 rounded">
+                                <div class="text-sm font-mono">
+                                    <span class="comment"># Saída de dados</span><br>
+                                    <span class="keyword">mostrar</span> <span class="string">"Olá, mundo!"</span><br><br>
+                                    <span class="comment"># Entrada de dados</span><br>
+                                    <span class="keyword">perguntar</span> <span class="string">"Seu nome:"</span> <span class="keyword">guardar_em</span> nome
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-600 mt-2">Comparação Python: print() / input()</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mt-6">
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">Estruturas Condicionais</h4>
+                        <div class="syntax-example p-4">
+                            <div class="code-block p-3 rounded">
+                                <div class="text-sm font-mono">
+                                    <span class="keyword">se</span> idade >= 18 <span class="keyword">então</span><br>
+                                        <span class="keyword">mostrar</span> <span class="string">"Maior de idade"</span><br>
+                                    <span class="keyword">senão_se</span> idade >= 16 <span class="keyword">então</span><br>
+                                        <span class="keyword">mostrar</span> <span class="string">"Pode votar"</span><br>
+                                    <span class="keyword">senão</span><br>
+                                        <span class="keyword">mostrar</span> <span class="string">"Menor de idade"</span><br>
+                                    <span class="keyword">fim_se</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">Estruturas de Repetição</h4>
+                        <div class="syntax-example p-4">
+                            <div class="code-block p-3 rounded">
+                                <div class="text-sm font-mono">
+                                    <span class="comment"># Laço com contador</span><br>
+                                    <span class="keyword">repetir</span> 5 <span class="keyword">vezes</span><br>
+                                        <span class="keyword">mostrar</span> <span class="string">"Repetição"</span><br>
+                                    <span class="keyword">fim_repetir</span><br><br>
+                                    
+                                    <span class="comment"># Laço condicional</span><br>
+                                    <span class="keyword">enquanto</span> idade < 18 <span class="keyword">faça</span><br>
+                                        idade = idade + 1<br>
+                                    <span class="keyword">fim_enquanto</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">2.3 Funcionalidades Avançadas</h3>
+                
+                <div class="space-y-4">
+                    <div class="syntax-example p-4">
+                        <h4 class="font-semibold text-gray-800 mb-3">Funções e Procedimentos</h4>
+                        <div class="code-block p-3 rounded">
+                            <div class="text-sm font-mono">
+                                <span class="keyword">função</span> saudacao(nome, idade)<br>
+                                    <span class="keyword">declarar</span> mensagem <span class="keyword">como</span> <span class="string">"Olá "</span> + nome<br>
+                                    <span class="keyword">mostrar</span> mensagem + <span class="string">", você tem "</span> + idade + <span class="string">" anos"</span><br>
+                                <span class="keyword">fim_função</span><br><br>
+                                
+                                <span class="comment"># Chamada da função</span><br>
+                                saudacao(<span class="string">"Maria"</span>, 16)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="syntax-example p-4">
+                        <h4 class="font-semibold text-gray-800 mb-3">Listas (Arrays)</h4>
+                        <div class="code-block p-3 rounded">
+                            <div class="text-sm font-mono">
+                                <span class="keyword">declarar</span> numeros <span class="keyword">como</span> lista[1, 2, 3, 4, 5]<br>
+                                <span class="keyword">declarar</span> nomes <span class="keyword">como</span> lista[<span class="string">"Ana"</span>, <span class="string">"João"</span>, <span class="string">"Maria"</span>]<br><br>
+                                
+                                <span class="comment"># Acessar elementos</span><br>
+                                <span class="keyword">mostrar</span> numeros[0] <span class="comment"># Primeiro elemento</span><br>
+                                
+                                <span class="comment"># Percorrer lista</span><br>
+                                <span class="keyword">para_cada</span> nome <span class="keyword">em</span> nomes <span class="keyword">faça</span><br>
+                                    <span class="keyword">mostrar</span> <span class="string">"Nome: "</span> + nome<br>
+                                <span class="keyword">fim_para_cada</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">2.4 Exemplo Completo: Calculadora Simples</h3>
+                
+                <div class="syntax-example p-4">
+                    <div class="code-block p-4 rounded">
+                        <div class="text-sm font-mono">
+                            <span class="comment"># Programa: Calculadora Simples em BrasilScript</span><br><br>
+                            
+                            <span class="keyword">mostrar</span> <span class="string">"=== CALCULADORA SIMPLES ==="</span><br>
+                            <span class="keyword">perguntar</span> <span class="string">"Digite o primeiro número: "</span> <span class="keyword">guardar_em</span> num1<br>
+                            <span class="keyword">perguntar</span> <span class="string">"Digite o segundo número: "</span> <span class="keyword">guardar_em</span> num2<br>
+                            <span class="keyword">perguntar</span> <span class="string">"Operação (+, -, *, /): "</span> <span class="keyword">guardar_em</span> operacao<br><br>
+                            
+                            <span class="keyword">se</span> operacao = <span class="string">"+"</span> <span class="keyword">então</span><br>
+                                <span class="keyword">declarar</span> resultado <span class="keyword">como</span> num1 + num2<br>
+                            <span class="keyword">senão_se</span> operacao = <span class="string">"-"</span> <span class="keyword">então</span><br>
+                                <span class="keyword">declarar</span> resultado <span class="keyword">como</span> num1 - num2<br>
+                            <span class="keyword">senão_se</span> operacao = <span class="string">"*"</span> <span class="keyword">então</span><br>
+                                <span class="keyword">declarar</span> resultado <span class="keyword">como</span> num1 * num2<br>
+                            <span class="keyword">senão_se</span> operacao = <span class="string">"/"</span> <span class="keyword">então</span><br>
+                                <span class="keyword">se</span> num2 ≠ 0 <span class="keyword">então</span><br>
+                                    <span class="keyword">declarar</span> resultado <span class="keyword">como</span> num1 / num2<br>
+                                <span class="keyword">senão</span><br>
+                                    <span class="keyword">mostrar</span> <span class="string">"Erro: Divisão por zero!"</span><br>
+                                    <span class="keyword">parar</span><br>
+                                <span class="keyword">fim_se</span><br>
+                            <span class="keyword">senão</span><br>
+                                <span class="keyword">mostrar</span> <span class="string">"Operação inválida!"</span><br>
+                                <span class="keyword">parar</span><br>
+                            <span class="keyword">fim_se</span><br><br>
+                            
+                            <span class="keyword">mostrar</span> <span class="string">"Resultado: "</span> + resultado
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página 3: Cronograma e Planejamento -->
+        <section class="page-break bg-white rounded-lg shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-purple-500 pb-2">3. Cronograma Detalhado e Planejamento do Projeto</h2>
+            
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">3.1 Cronograma de 15 Semanas</h3>
+                
+                <div class="space-y-6">
+                    <!-- Fase 1: Planejamento e Fundamentos -->
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <h4 class="text-lg font-semibold text-blue-800 mb-4">Fase 1: Planejamento e Fundamentos (Semanas 1-3)</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 1: Formação da Equipe e Proposta Inicial</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Definição de papéis e responsabilidades</li>
+                                    <li>• Criação da proposta inicial da linguagem</li>
+                                    <li>• Estabelecimento do diário de desenvolvimento</li>
+                                    <li>• Pesquisa de linguagens similares e referências</li>
+                                </ul>
+                                <p class="text-sm text-blue-600 mt-2"><strong>Entrega:</strong> Proposta Inicial (3 páginas)</p>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 2: Especificação Detalhada da Sintaxe</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Definição completa da gramática da linguagem</li>
+                                    <li>• Criação de exemplos de código para todas as estruturas</li>
+                                    <li>• Especificação de tipos de dados e operadores</li>
+                                    <li>• Definição de palavras-chave e convenções</li>
+                                </ul>
+                                <p class="text-sm text-blue-600 mt-2"><strong>Entrega:</strong> Especificação da Sintaxe</p>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 3: Arquitetura do Interpretador</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Design da arquitetura do interpretador</li>
+                                    <li>• Especificação do analisador léxico (tokenização)</li>
+                                    <li>• Design do analisador sintático (parser)</li>
+                                    <li>• Planejamento da estrutura de dados interna</li>
+                                </ul>
+                                <p class="text-sm text-blue-600 mt-2"><strong>Entrega:</strong> Documento de Arquitetura</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Fase 2: Desenvolvimento Core -->
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <h4 class="text-lg font-semibold text-green-800 mb-4">Fase 2: Desenvolvimento Core (Semanas 4-9)</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 4: Analisador Léxico (Tokenizer)</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Implementação do tokenizer em Python</li>
+                                    <li>• Reconhecimento de palavras-chave em português</li>
+                                    <li>• Identificação de operadores e delimitadores</li>
+                                    <li>• Testes unitários para o tokenizer</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 5: Analisador Sintático (Parser)</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Implementação do parser recursivo descendente</li>
+                                    <li>• Construção da árvore sintática abstrata (AST)</li>
+                                    <li>• Tratamento de erros sintáticos</li>
+                                    <li>• Testes de parsing para estruturas básicas</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="timeline-item bg-yellow-100 p-3 rounded border-l-4 border-yellow-500">
+                                <h5 class="font-semibold text-gray-800">Semana 6: ENTREGA PARCIAL - Avaliação Intermediária</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Apresentação do progresso para avaliação</li>
+                                    <li>• Demonstração do tokenizer e parser funcionais</li>
+                                    <li>• Relatório de progresso e dificuldades</li>
+                                    <li>• Feedback e ajustes no cronograma</li>
+                                </ul>
+                                <p class="text-sm text-yellow-700 mt-2"><strong>Entrega:</strong> Protótipo Funcional + Relatório</p>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 7: Interpretador - Estruturas Básicas</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Implementação de variáveis e atribuições</li>
+                                    <li>• Operações aritméticas e lógicas</li>
+                                    <li>• Comandos de entrada e saída (mostrar, perguntar)</li>
+                                    <li>• Sistema de tipos básicos (número, texto, lógico)</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 8: Estruturas de Controle</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Implementação de condicionais (se, senão_se, senão)</li>
+                                    <li>• Estruturas de repetição (enquanto, repetir)</li>
+                                    <li>• Controle de fluxo e escopo de variáveis</li>
+                                    <li>• Testes de integração das estruturas</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 9: Funções e Estruturas de Dados</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Implementação de funções definidas pelo usuário</li>
+                                    <li>• Sistema de parâmetros e valores de retorno</li>
+                                    <li>• Implementação de listas (arrays)</li>
+                                    <li>• Operações com listas (acesso, modificação, iteração)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Fase 3: Interface e Documentação -->
+                    <div class="bg-purple-50 p-6 rounded-lg">
+                        <h4 class="text-lg font-semibold text-purple-800 mb-4">Fase 3: Interface e Documentação (Semanas 10-12)</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 10: Interface de Desenvolvimento</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Desenvolvimento de IDE web simples</li>
+                                    <li>• Editor de código com highlight de sintaxe</li>
+                                    <li>• Console integrado para execução</li>
+                                    <li>• Sistema de salvamento de arquivos</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 11: Documentação e Tutoriais</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Manual completo da linguagem</li>
+                                    <li>• Tutoriais passo-a-passo para iniciantes</li>
+                                    <li>• Galeria de exemplos práticos</li>
+                                    <li>• Guia de referência rápida</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 12: Sistema de Ajuda e Feedback</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Mensagens de erro claras e educativas</li>
+                                    <li>• Sistema de sugestões automáticas</li>
+                                    <li>• Help interativo dentro do IDE</li>
+                                    <li>• Testes de usabilidade com usuários</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Fase 4: Finalização -->
+                    <div class="bg-orange-50 p-6 rounded-lg">
+                        <h4 class="text-lg font-semibold text-orange-800 mb-4">Fase 4: Testes e Finalização (Semanas 13-15)</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 13: Testes e Validação</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Testes extensivos com casos reais</li>
+                                    <li>• Correção de bugs e otimizações</li>
+                                    <li>• Validação com educadores e estudantes</li>
+                                    <li>• Benchmarks de performance</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <h5 class="font-semibold text-gray-800">Semana 14: Preparação da Apresentação</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Criação de slides e material de apresentação</li>
+                                    <li>• Preparação de demonstrações ao vivo</li>
+                                    <li>• Ensaios da apresentação final</li>
+                                    <li>• Finalização da documentação técnica</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="timeline-item bg-red-100 p-3 rounded border-l-4 border-red-500">
+                                <h5 class="font-semibold text-gray-800">Semana 15: ENTREGA FINAL</h5>
+                                <ul class="text-gray-600 mt-2 space-y-1">
+                                    <li>• Apresentação final do projeto</li>
+                                    <li>• Demonstração completa da linguagem</li>
+                                    <li>• Entrega de todo o código e documentação</li>
+                                    <li>• Avaliação final e feedback</li>
+                                </ul>
+                                <p class="text-sm text-red-700 mt-2"><strong>Entrega:</strong> Projeto Completo + Apresentação</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">3.2 Divisão de Responsabilidades</h3>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <div class="text-center mb-4">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f011119b-a178-428b-985f-077e5b4f8430.png" alt="Avatar representando Breno como gerente de projeto com ícones de planejamento e organização" class="w-16 h-16 rounded-full mx-auto mb-2" />
+                            <h4 class="font-bold text-blue-800">Breno</h4>
+                            <p class="text-sm text-blue-600">Gerente de Projeto e Desenvolvedor de Sintaxe</p>
+                        </div>
+                        <ul class="space-y-2 text-sm text-blue-700">
+                            <li>✓ Coordenação geral do projeto</li>
+                            <li>✓ Definição da sintaxe da linguagem</li>
+                            <li>✓ Criação de exemplos de código</li>
+                            <li>✓ Controle de cronograma e entregas</li>
+                            <li>✓ Comunicação com orientadores</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <div class="text-center mb-4">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f011119b-a178-428b-985f-077e5b4f8430.png" alt="Avatar representando Caio como desenvolvedor de software com ícones de programação e arquitetura" class="w-16 h-16 rounded-full mx-auto mb-2" />
+                            <h4 class="font-bold text-green-800">Caio</h4>
+                            <p class="text-sm text-green-600">Desenvolvedor de Interpretador e Arquitetura</p>
+                        </div>
+                        <ul class="space-y-2 text-sm text-green-700">
+                            <li>✓ Implementação do interpretador</li>
+                            <li>✓ Design da arquitetura do sistema</li>
+                            <li>✓ Desenvolvimento do parser e tokenizer</li>
+                            <li>✓ Otimização de performance</li>
+                            <li>✓ Testes técnicos e debugging</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-purple-50 p-6 rounded-lg">
+                        <div class="text-center mb-4">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f011119b-a178-428b-985f-077e5b4f8430.png" alt="Avatar representando Leonardo como designer e documentador com ícones de interface e escrita" class="w-16 h-16 rounded-full mx-auto mb-2" />
+                            <h4 class="font-bold text-purple-800">Leandro</h4>
+                            <p class="text-sm text-purple-600">Documentador e Designer de Interface</p>
+                        </div>
+                        <ul class="space-y-2 text-sm text-purple-700">
+                            <li>✓ Criação da documentação completa</li>
+                            <li>✓ Design da interface do IDE</li>
+                            <li>✓ Desenvolvimento de tutoriais</li>
+                            <li>✓ Testes de usabilidade</li>
+                            <li>✓ Material de apresentação</li>
+                        </ul>
+                    </div>
+                    <div class="bg-purple-50 p-6 rounded-lg">
+                        <div class="text-center mb-4">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f011119b-a178-428b-985f-077e5b4f8430.png" alt="Avatar representando Leonardo como designer e documentador com ícones de interface e escrita" class="w-16 h-16 rounded-full mx-auto mb-2" />
+                            <h4 class="font-bold text-purple-800">Gabriel</h4>
+                            <p class="text-sm text-purple-600">Documentador e Designer de Interface</p>
+                        </div>
+                        <ul class="space-y-2 text-sm text-purple-700">
+                            <li>✓ Criação da documentação completa</li>
+                            <li>✓ Design da interface do IDE</li>
+                            <li>✓ Desenvolvimento de tutoriais</li>
+                            <li>✓ Testes de usabilidade</li>
+                            <li>✓ Material de apresentação</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">3.3 Ferramentas e Tecnologias</h3>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h4 class="font-semibold text-gray-800 mb-3">Desenvolvimento</h4>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>• <strong>Python 3.9+:</strong> Linguagem base para o interpretador</li>
+                            <li>• <strong>PLY (Python Lex-Yacc):</strong> Para parser e tokenizer</li>
+                            <li>• <strong>Flask:</strong> Framework web para o IDE</li>
+                            <li>• <strong>HTML/CSS/JavaScript:</strong> Interface do usuário</li>
+                            <li>• <strong>Git/GitHub:</strong> Controle de versão</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h4 class="font-semibold text-gray-800 mb-3">Documentação e Design</h4>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>• <strong>Markdown:</strong> Documentação técnica</li>
+                            <li>• <strong>Figma:</strong> Design de interface</li>
+                            <li>• <strong>Canva:</strong> Material de apresentação</li>
+                            <li>• <strong>Draw.io:</strong> Diagramas e fluxogramas</li>
+                            <li>• <strong>Notion:</strong> Diário de desenvolvimento</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
+                <h4 class="font-semibold text-yellow-800 mb-3">Riscos e Mitigações</h4>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-yellow-700 mb-2"><strong>Risco:</strong> Complexidade técnica alta</p>
+                        <p class="text-xs text-yellow-600"><strong>Mitigação:</strong> Começar com MVP simples e expandir gradualmente</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-yellow-700 mb-2"><strong>Risco:</strong> Divergência na equipe</p>
+                        <p class="text-xs text-yellow-600"><strong>Mitigação:</strong> Reuniões semanais e comunicação constante</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Diário de Desenvolvimento -->
+        <section class="bg-white rounded-lg shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-blue-500 pb-2">4. Diário de Desenvolvimento</h2>
+            
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg mb-6">
+                <p class="text-gray-700">
+                    O Diário de Desenvolvimento será mantido colaborativamente pela equipe utilizando a plataforma Notion, 
+                    permitindo registro em tempo real do progresso, decisões e reflexões sobre o projeto.
+                </p>
+            </div>
+
+            <div class="space-y-6">
+                <div class="border-l-4 border-blue-500 pl-6">
+                    <h4 class="font-semibold text-gray-800 mb-2">Semana 1 - Dia 1: Formação da Equipe</h4>
+                    <p class="text-gray-600 text-sm mb-2"><strong>Data:</strong> [Data da primeira reunião]</p>
+                    <p class="text-gray-700 mb-3">
+                        Realizamos nossa primeira reunião de equipe para definir os papéis e discutir a proposta inicial. 
+                        Decidimos que a BrasilScript deve focar na simplicidade extrema, sendo ainda mais acessível que o Python.
+                    </p>
+                    <p class="text-gray-600 text-sm"><strong>Decisões:</strong> Uso do português brasileiro, sintaxe natural, foco educacional</p>
+                </div>
+
+                <div class="border-l-4 border-green-500 pl-6">
+                    <h4 class="font-semibold text-gray-800 mb-2">Semana 1 - Dia 3: Pesquisa de Referências</h4>
+                    <p class="text-gray-600 text-sm mb-2"><strong>Data:</strong> [Data da pesquisa]</p>
+                    <p class="text-gray-700 mb-3">
+                        Estudamos linguagens como Scratch, Logo e Python para entender diferentes abordagens educacionais. 
+                        Identificamos que a barreira linguística é realmente um fator limitante no Brasil.
+                    </p>
+                    <p class="text-gray-600 text-sm"><strong>Insights:</strong> Necessidade de syntax highlighting, mensagens de erro claras</p>
+                </div>
+
+                <div class="border-l-4 border-purple-500 pl-6">
+                    <h4 class="font-semibold text-gray-800 mb-2">Semana 1 - Dia 5: Definição da Sintaxe Base</h4>
+                    <p class="text-gray-600 text-sm mb-2"><strong>Data:</strong> [Data da definição]</p>
+                    <p class="text-gray-700 mb-3">
+                        Estabelecemos as primeiras palavras-chave: declarar, mostrar, perguntar, se, senão, enquanto. 
+                        A equipe está animada com a naturalidade da sintaxe proposta.
+                    </p>
+                    <p class="text-gray-600 text-sm"><strong>Próximos passos:</strong> Finalizar especificação completa da gramática</p>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+                <p class="text-sm text-gray-600">
+                    <strong>Nota:</strong> Este diário será atualizado diariamente durante todo o projeto, 
+                    documentando progressos, dificuldades e soluções encontradas pela equipe.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="gradient-bg text-white py-6 text-center no-print">
+        <div class="container mx-auto px-6">
+            <p class="mb-2">Projeto Integrador - BrasilScript</p>
+            <p class="text-sm opacity-75">Universidade de Marília - UNIMAR | Ciência da Computação | 2024</p>
+            <div class="mt-4">
+                <button onclick="window.print()" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
+                    Imprimir Relatório
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add some interactive features
+            const cards = document.querySelectorAll('.feature-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Add syntax highlighting effect
+            const codeBlocks = document.querySelectorAll('.code-block');
+            codeBlocks.forEach(block => {
+                block.addEventListener('click', function() {
+                    // Copy to clipboard functionality could be added here
+                    console.log('Code block clicked');
+                });
+            });
+
+            // Add timeline animation
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateX(0)';
+                    }
+                });
+            });
+
+            timelineItems.forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                item.style.transition = 'all 0.6s ease';
+                observer.observe(item);
+            });
+
+            // Add progress tracking
+            let currentWeek = 1;
+            const totalWeeks = 15;
+            
+            function updateProgress() {
+                const progressBar = document.createElement('div');
+                progressBar.className = 'fixed top-0 left-0 w-full h-1 bg-blue-500 z-50 no-print';
+                progressBar.style.width = `${(currentWeek / totalWeeks) * 100}%`;
+                progressBar.style.transition = 'width 0.3s ease';
+                document.body.appendChild(progressBar);
+            }
+
+            updateProgress();
+        });
+
+        // Print optimization
+        function optimizeForPrint() {
+            const elements = document.querySelectorAll('.no-print');
+            elements.forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>
