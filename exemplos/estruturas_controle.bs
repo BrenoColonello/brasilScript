@@ -1,0 +1,46 @@
+# Programa: Demonstração de Estruturas de Controle
+# Mostra condicionais, loops e funções
+
+# Declaração de variáveis
+declarar idade como 18
+declarar contador como 0
+declarar nomes como lista["Ana", "João", "Maria", "Pedro"]
+
+# Estrutura condicional
+mostrar "=== VERIFICAÇÃO DE IDADE ==="
+se idade >= 18 então
+    mostrar "Maior de idade"
+senão_se idade >= 16 então
+    mostrar "Pode votar"
+senão
+    mostrar "Menor de idade"
+fim_se
+
+# Loop while
+mostrar "\n=== CONTADOR ==="
+enquanto contador < 3 faça
+    mostrar "Contador: " + contador
+    contador = contador + 1
+fim_enquanto
+
+# Loop for com repetir
+mostrar "\n=== REPETIÇÃO ==="
+repetir 2 vezes
+    mostrar "Repetindo..."
+fim_repetir
+
+# Loop para_cada
+mostrar "\n=== LISTA DE NOMES ==="
+para_cada nome em nomes faça
+    mostrar "Nome: " + nome
+fim_para_cada
+
+# Função
+função saudar(nome, idade)
+    declarar mensagem como "Olá " + nome + ", você tem " + idade + " anos"
+    mostrar mensagem
+fim_função
+
+# Chamada da função
+mostrar "\n=== FUNÇÃO ==="
+saudar("Maria", 20)

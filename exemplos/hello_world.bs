@@ -1,0 +1,5 @@
+# Programa: Olá, Mundo!
+# Este é um exemplo básico da linguagem BrasilScript
+
+mostrar "Olá, mundo!"
+mostrar "Bem-vindo à BrasilScript!"
