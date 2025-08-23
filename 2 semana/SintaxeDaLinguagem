@@ -1,0 +1,88 @@
+
+
+#### 1. Definição do Alfabeto Básico ($\Sigma$)
+
+O **alfabeto ($\Sigma$)** da BrasilScript é o conjunto de todos os caracteres válidos que podem compor um programa. Ele representa o conjunto de símbolos atômicos a partir dos quais todas as "palavras" (tokens) da linguagem são construídas.
+
+*   **Caracteres Alfabéticos:**
+    *   Letras minúsculas: `a, b, c, ..., z`
+    *   Letras maiúsculas: `A, B, C, ..., Z`
+*   **Caracteres Numéricos:**
+    *   Dígitos: `0, 1, 2, 3, 4, 5, 6, 7, 8, 9`
+*   **Caracteres Especiais e Símbolos:**
+    *   Operadores Aritméticos: `+, -, *, /, %`
+    *   Operadores Relacionais: `=`, `!=`, `<`, `>`, `<=`, `>=`
+    *   Delimitadores: `(, ), [, ], {, }, ,, ., :, ;`
+    *   Atribuição: `=`
+    *   Comentário: `#`
+    *   Aspas: `"`
+    *   Ponto decimal: `.`
+    *   Espaço em branco: ` ` (representando espaço e tabulação)
+        *   Barra invertida: `\` (necessária para sequências de escape como `\n`)
+
+Formalmente, `$\Sigma = \{a-z, A-Z, 0-9, +, -, *, /, %, =, \neq, <, >, \le, \ge, (, ), [, ], {, }, ,, ., :, ;, \#, ", ', \sqcup, \text{\textbackslash n}\}$`.
+
+#### 2. Especificação dos Tipos de Tokens
+
+Utilizaremos Expressões Regulares e notação formal para definir cada tipo de token.
+
+*   **Identificadores (ID):**
+    *   Um identificador deve começar com uma letra (minúscula ou maiúscula) ou sublinhado, seguido por zero ou mais letras (minúsculas ou maiúsculas), dígitos ou sublinhados.
+    *   Formalmente: `$ID = (Letra \cup \_)(Letra \cup Dígito \cup \_)*$`
+    *   Onde `$Letra = \{a-z, A-Z\}$` e `$Dígito = \{0-9\}$`.
+    *   **Reflexão:** Identificadores serão *case-sensitive*.
+
+*   **Palavras-Chave (KW):**
+    *   São identificadores reservados com significado especial. Todas em minúsculas (conforme decisão anterior).
+    *   `$KW = declarar, como, mostrar, perguntar, guardar_em, se, entao, senao, repetir, vezes, enquanto, faca, funcao, lista, para_cada, em, parar, e, ou, nao, retornar, texto, numero, logico, contador`
+
+*   **Literais Numéricos (NUMERO_LITERAL):**
+    *   Representa tanto números inteiros quanto números com casas decimais.
+    *   Pode ser uma sequência de dígitos (inteiro) ou uma sequência de dígitos seguida por um ponto e outra sequência de dígitos (quebrado/decimal).
+    *   Formalmente: `$NUMERO_LITERAL = dígito+ (\text{.} dígito+)?$`
+    *   Onde `?` indica que a parte decimal é opcional.
+
+*   **Literais de Texto (STRING):**
+    *   Sequência de caracteres delimitada por aspas duplas ou simples.
+    *   Formalmente: `$STRING = "(\Sigma \setminus \{"\})"* " \cup '(\Sigma \setminus \{'\})'* '$`
+    *   **Reflexão:** Caracteres especiais dentro de strings (como quebras de linha) serão representados por sequências de escape (ex: `\n`).
+
+*   **Literais Lógicos (LOGICO_LITERAL):**
+    *   Representam valores booleanos.
+    *   `$LOGICO_LITERAL = verdadeiro, falso`
+
+*   **Operadores (OP):**
+    *   `OP = +, -, *, /, %, =, \neq, <, >, \le, \ge\`
+
+*   **Delimitadores (DELIM):**
+    *   `DELIM = (, ), [, ], {, }, ,, ., :, ;`
+
+*   **Comentários (COMMENT):**
+    *   Iniciam com `#` e vão até o final da linha (marcado por `\n`).
+    *   Formalmente: `COMMENT = # (\Sigma \setminus \{\text{\textbackslash n}\})* \text{\textbackslash n}$`
+    *   **Aplicação de Fechamento de Kleene:** O uso de `*` permite que o comentário tenha comprimento variável, incluindo comentários vazios após o `#`.
+
+*   **Espaços em Branco (WHITESPACE):**
+    *   Sequência de um ou mais espaços ou tabulações. Quebras de linha (`\n`) serão tratadas separadamente como delimitadores de linha para comentários e fim de instrução (se aplicável).
+    *   Formalmente: `$WHITESPACE = (\sqcup \cup \text{tab})+$`
+    *   **Reflexão:** Espaços em branco serão ignorados pelo analisador léxico, exceto dentro de strings.
+
+#### 3. Exemplos Concretos de Programas Válidos
+
+```brasilscript
+# este e um programa simples
+declarar MeuNome como texto
+declarar MinhaIdade como numero
+declarar EstaAtivo como logico
+
+MeuNome = "brasilscript"
+MinhaIdade = 10 # numero inteiro
+EstaAtivo = verdadeiro
+
+mostrar "ola, mundo da " + MeuNome + "!\n"
+mostrar "idade: " + MinhaIdade + "\n"
+mostrar "ativo: " + EstaAtivo + "\n"
+
+declarar PrecoProduto como numero
+PrecoProduto = 99.99 # numero quebrado/decimal
+mostrar "preco: " + PrecoProduto + "\n"
