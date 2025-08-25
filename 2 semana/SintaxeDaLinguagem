@@ -34,7 +34,7 @@ Utilizaremos Expressões Regulares e notação formal para definir cada tipo de 
 
 *   **Palavras-Chave (KW):**
     *   São identificadores reservados com significado especial. Todas em minúsculas (conforme decisão anterior).
-    *   `$KW = declarar, como, mostrar, perguntar, guardar_em, se, entao, senao, repetir, vezes, enquanto, faca, funcao, lista, para_cada, em, parar, e, ou, nao, retornar, texto, numero, logico, contador`
+    *   `$KW = declarar, como, mostrar, perguntar, guardar_em, se, entao, senao, repetir, vezes, enquanto, faca, funcao, lista, para_cada, em, parar, e, ou, nao, retornar, texto, numero, logico, contador, classe`
 
 *   **Literais Numéricos (NUMERO_LITERAL):**
     *   Representa tanto números inteiros quanto números com casas decimais.
@@ -66,6 +66,11 @@ Utilizaremos Expressões Regulares e notação formal para definir cada tipo de 
     *   Sequência de um ou mais espaços ou tabulações. Quebras de linha (`\n`) serão tratadas separadamente como delimitadores de linha para comentários e fim de instrução (se aplicável).
     *   Formalmente: `$WHITESPACE = (\sqcup \cup \text{tab})+$`
     *   **Reflexão:** Espaços em branco serão ignorados pelo analisador léxico, exceto dentro de strings.
+
+#### Exemplo de Criação de função 
+
+{nome funcao} {tipo retorno} {corpo funcao}
+Declarar um nome, colocar o tipo dela e montar o corpo
 
 #### 3. Exemplos Concretos de Programas Válidos
 
