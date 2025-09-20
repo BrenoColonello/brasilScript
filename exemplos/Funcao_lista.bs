@@ -1,0 +1,16 @@
+funcao SomarLista(MinhaLista)
+    declarar SomaTotal como numero
+    SomaTotal = 0
+
+    para_cada Elemento em MinhaLista faca
+        SomaTotal = SomaTotal + Elemento
+    fim_para_cada
+    retornar SomaTotal
+fim_funcao
+
+declarar PrecosProdutos como lista[numero] # Exemplo de lista tipada (se for o caso)
+PrecosProdutos = [10, 20.5, 30.0] # Numeros inteiros e quebrados no mesmo tipo 'numero'
+
+declarar TotalVendas como numero
+TotalVendas = SomarLista(PrecosProdutos)
+mostrar("o total de vendas e: " + TotalVendas + "\n")

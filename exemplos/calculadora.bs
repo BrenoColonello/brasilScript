@@ -1,28 +1,28 @@
-# Programa: Calculadora Simples
-# Demonstra operações básicas e entrada de dados
+ # Programa: Calculadora Simples
+ # Demonstra operacoes basicas e entrada de dados
 
-mostrar "=== CALCULADORA SIMPLES ==="
+ mostrar "=== CALCULADORA SIMPLES ==="
 
-perguntar "Digite o primeiro número: " guardar_em num1
-perguntar "Digite o segundo número: " guardar_em num2
-perguntar "Operação (+, -, *, /): " guardar_em operacao
+ perguntar "Digite o primeiro numero: " guardar_em num1
+ perguntar "Digite o segundo numero: " guardar_em num2
+ perguntar "Operacao (+, -, *, /): " guardar_em operacao
 
-se operacao = "+" então
-    declarar resultado como num1 + num2
-senão_se operacao = "-" então
-    declarar resultado como num1 - num2
-senão_se operacao = "*" então
-    declarar resultado como num1 * num2
-senão_se operacao = "/" então
-    se num2 != 0 então
-        declarar resultado como num1 / num2
-    senão
-        mostrar "Erro: Divisão por zero!"
-        parar
-    fim_se
-senão
-    mostrar "Operação inválida!"
-    parar
-fim_se
+ se operacao = "+" entao
+     declarar resultado como num1 + num2
+ senao_se operacao = "-" entao
+     declarar resultado como num1 - num2
+ senao_se operacao = "*" entao
+     declarar resultado como num1 * num2
+ senao_se operacao = "/" entao
+     se num2 != 0 entao
+         declarar resultado como num1 / num2
+     senao
+         mostrar "Erro: Divisao por zero!"
+         parar
+     fim_se
+ senao
+     mostrar "Operacao invalida!"
+     parar
+ fim_se
 
-mostrar "Resultado: " + resultado
+ mostrar "Resultado: " + resultado
