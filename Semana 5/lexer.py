@@ -30,21 +30,28 @@ class LexerError(Exception):
 class Lexer:
     """Regex-based lexer for BrasilScript.
 
-    Produces Token objects with attributes (tipo, valor, linha, coluna).
+    Produces Token objects with attributes (tipo, valor).
     """
 
     # Order matters: longer/more specific patterns first
     token_specification: List[Tuple[str, str]] = [
-        # Comments and whitespace
+        # Newlines (track lines explicitly)
+        ("NEWLINE", r"\r\n|\n"),
+
+        # Comments and horizontal whitespace
         ("COMMENT", r"#[^\r\n]*"),
         ("WHITESPACE", r"[ \t]+"),
+
+        # Invalid identifiers (identifiers starting with digits) - must come
+        # before numbers so the whole word is matched as one token
+        ("IDENTIFICADOR_INVALIDO", r"\d[a-zA-Z0-9_]*"),
+
+        # Numbers (integers, decimals, scientific)
+        ("NUMERO_LITERAL", r"\d+(?:\.\d+)?(?:[eE][+-]?\d+)?"),
 
         # Strings (double and single quoted)
         ("STRING_LITERAL", r'"(?:[^"\\]|\\.)*"'),
         ("STRING_LITERAL", r"'(?:[^'\\]|\\.)*'"),
-
-        # Numbers (integers, decimals, scientific)
-        ("NUMERO_LITERAL", r"\d+(?:\.\d+)?(?:[eE][+-]?\d+)?"),
 
         # Logical literals
         ("LOGICO_LITERAL", r"\b(?:verdadeiro|falso)\b"),
@@ -82,9 +89,11 @@ class Lexer:
         parts = []
         for idx, (name, pattern) in enumerate(self.token_specification):
             parts.append(f"(?P<T{idx}>{pattern})")
-        self.master_re = re.compile("|".join(parts), re.MULTILINE)
+        # Use DOTALL only indirectly -- we handle newlines explicitly above
+        self.master_re = re.compile("|".join(parts))
 
     def tokenize(self) -> Iterator[Token]:
+        # Iterate matches in source
         for mo in self.master_re.finditer(self.source):
             kind = None
             value = mo.group(0)
@@ -96,38 +105,43 @@ class Lexer:
                     break
 
             if kind is None:
+                # should not happen because MISMATCH covers others
                 raise LexerError("Token desconhecido")
 
-            if kind == "WHITESPACE":
-                # skip
-                pass
-            elif kind == "COMMENT":
-                # skip comments
-                pass
-            elif kind == "MISMATCH":
-                raise LexerError(f"Caractere inválido: {value!r}")
-            else:
-                # Normalize token kind names for consistency with spec
-                normalized_kind = kind
-                if kind == "KW":
-                    normalized_kind = "PALAVRA_CHAVE"
-                elif kind == "IDENTIFICADOR":
-                    normalized_kind = "IDENTIFICADOR"
-                elif kind == "NUMERO_LITERAL":
-                    normalized_kind = "NUMERO_LITERAL"
-                elif kind == "STRING_LITERAL":
-                    normalized_kind = "STRING_LITERAL"
-                elif kind == "LOGICO_LITERAL":
-                    normalized_kind = "LOGICO_LITERAL"
-                elif kind in ("OP_ARITMETICO", "OP_RELACIONAL"):
-                    normalized_kind = "OP"
+            if kind in ("WHITESPACE", "COMMENT", "NEWLINE"):
+                # skip but continue (we still consume these parts)
+                continue
 
-                yield Token(normalized_kind, value)
+            if kind == "MISMATCH":
+                # unexpected single character
+                raise LexerError(f"Caractere inválido: {value!r}")
+
+            # For invalid identifiers, produce a token so parser can report error
+            normalized_kind = kind
+            if kind == "KW":
+                normalized_kind = "PALAVRA_CHAVE"
+            elif kind == "IDENTIFICADOR":
+                normalized_kind = "IDENTIFICADOR"
+            elif kind == "IDENTIFICADOR_INVALIDO":
+                normalized_kind = "IDENTIFICADOR_INVALIDO"
+            elif kind == "NUMERO_LITERAL":
+                normalized_kind = "NUMERO_LITERAL"
+            elif kind == "STRING_LITERAL":
+                normalized_kind = "STRING_LITERAL"
+            elif kind == "LOGICO_LITERAL":
+                normalized_kind = "LOGICO_LITERAL"
+            elif kind in ("OP_ARITMETICO", "OP_RELACIONAL"):
+                normalized_kind = "OP"
+
+            yield Token(normalized_kind, value)
 
 
 if __name__ == "__main__":
     import sys
     text = sys.stdin.read() if not sys.argv[1:] else open(sys.argv[1]).read()
     lx = Lexer(text)
-    for t in lx.tokenize():
-        print(t)
+    try:
+        for t in lx.tokenize():
+            print(t)
+    except LexerError as e:
+        print(f"Erro léxico: {e}")

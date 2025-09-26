@@ -26,3 +26,5 @@
  fim_se
 
  mostrar "Resultado: " + resultado
+ 
+  $4373bd9
