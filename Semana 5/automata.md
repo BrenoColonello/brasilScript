@@ -77,7 +77,6 @@ stateDiagram-v2
     ExpStart --> ExpSign : + ou -
     ExpStart --> ExpDigits : dígito
     ExpSign --> ExpDigits : dígito
-    ExpDigits --> ExpDigits : dígito
     ExpDigits --> [*] : fim
 ```
 
@@ -200,18 +199,10 @@ stateDiagram-v2
     Start --> RParen : )
     LParen --> [*]
     RParen --> [*]
-```
 
-### Colchetes: `\[` e `\]`
-
-```mermaid
 stateDiagram-v2
     [*] --> Start
     Start --> LBracket : [
-    Start --> RBracket : ]
-    LBracket --> [*]
-    RBracket --> [*]
-```
 
 ### Chaves: `\{` e `\}`
 
