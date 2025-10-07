@@ -1,8 +1,11 @@
-def accepts_whitespace(s: str) -> bool:
-    """AFD for whitespace: [ \t]+  (one or more spaces or tabs)"""
+from .token_types import WHITESPACE
+
+
+def accepts_whitespace(s: str):
+    """Return WHITESPACE if s is one or more spaces/tabs, else None."""
     if not s:
-        return False
+        return None
     for c in s:
         if c not in (' ', '\t'):
-            return False
-    return True
+            return None
+    return WHITESPACE

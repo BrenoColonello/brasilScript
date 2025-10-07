@@ -1,10 +1,13 @@
-def accepts_comment(s: str) -> bool:
-    """AFD for comment: #[^\r\n]*  (starts with #, no CR/LF inside)"""
+from .token_types import COMMENT
+
+
+def accepts_comment(s: str):
+    """Return COMMENT if s is a comment starting with # and no newline, else None."""
     if not s:
-        return False
+        return None
     if s[0] != '#':
-        return False
+        return None
     for c in s[1:]:
         if c == '\r' or c == '\n':
-            return False
-    return True
+            return None
+    return COMMENT

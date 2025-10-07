@@ -1,15 +1,15 @@
-def accepts_string_literal(s: str) -> bool:
-    """AFD for string literals: double- or single-quoted with escapes.
+from .token_types import STRING_LITERAL
 
-    Regex: "(?:[^"\\]|\\.)*"  and  '(?:[^'\\]|\\.)*'
-    """
+
+def accepts_string_literal(s: str):
+    """Return STRING_LITERAL if s is a quoted string literal, else None."""
     if len(s) < 2:
-        return False
+        return None
     quote = s[0]
     if quote not in ('"', "'"):
-        return False
+        return None
     if s[-1] != quote:
-        return False
+        return None
     i = 1
     n = len(s)
     while i < n - 1:
@@ -20,7 +20,7 @@ def accepts_string_literal(s: str) -> bool:
             continue
         # disallow raw newline characters inside string
         if c == '\n' or c == '\r':
-            return False
+            return None
         i += 1
     # last char matched quote
-    return True
+    return STRING_LITERAL

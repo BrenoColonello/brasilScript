@@ -1,13 +1,13 @@
-def accepts_numero_literal(s: str) -> bool:
-    """AFD for regex: \d+(?:\.\d+)?(?:[eE][+-]?\d+)?
+from .token_types import NUMERO_LITERAL
 
-    Accepts integers, decimals and scientific notation.
-    """
+
+def accepts_numero_literal(s: str):
+    """Return token type if `s` matches the NUMERO_LITERAL regex, else None."""
     i = 0
     n = len(s)
     # At least one digit
     if i >= n or not s[i].isdigit():
-        return False
+        return None
     while i < n and s[i].isdigit():
         i += 1
     # optional fractional part
@@ -15,7 +15,7 @@ def accepts_numero_literal(s: str) -> bool:
         i += 1
         # must have at least one digit after dot
         if i >= n or not s[i].isdigit():
-            return False
+            return None
         while i < n and s[i].isdigit():
             i += 1
     # optional exponent
@@ -25,8 +25,8 @@ def accepts_numero_literal(s: str) -> bool:
             i += 1
         # must have at least one digit in exponent
         if i >= n or not s[i].isdigit():
-            return False
+            return None
         while i < n and s[i].isdigit():
             i += 1
     # accept only if consumed all
-    return i == n
+    return NUMERO_LITERAL if i == n else None

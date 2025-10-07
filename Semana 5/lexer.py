@@ -42,12 +42,12 @@ class Lexer:
         ("COMMENT", r"#[^\r\n]*"),
         ("WHITESPACE", r"[ \t]+"),
 
-        # Invalid identifiers (identifiers starting with digits) - must come
-        # before numbers so the whole word is matched as one token
-        ("IDENTIFICADOR_INVALIDO", r"\d[a-zA-Z0-9_]*"),
-
         # Numbers (integers, decimals, scientific)
-        ("NUMERO_LITERAL", r"\d+(?:\.\d+)?(?:[eE][+-]?\d+)?"),
+    ("NUMERO_LITERAL", r"\d+(?:\.\d+)?(?:[eE][+-]?\d+)?"),
+
+    # Invalid identifiers (identifiers starting with digits) - match cases
+    # like `123abc` where the lexeme is not a valid number but starts with digits
+    ("IDENTIFICADOR_INVALIDO", r"\d[a-zA-Z0-9_]*"),
 
         # Strings (double and single quoted)
         ("STRING_LITERAL", r'"(?:[^"\\]|\\.)*"'),

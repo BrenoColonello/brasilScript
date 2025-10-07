@@ -91,3 +91,40 @@ mostrar "ativo: " + EstaAtivo + "\n"
 declarar PrecoProduto como numero
 PrecoProduto = 99.99 # numero quebrado/decimal
 mostrar "preco: " + PrecoProduto + "\n"
+
+## Integração com Semana 5 — Autômatos (AFD)
+
+Observação: as expressões regulares definidas nesta especificação foram convertidas em autômatos finitos determinísticos na semana 5. A implementação e os diagramas estão em `Semana 5/`.
+
+- Diagrama (Mermaid): `Semana 5/automata.md` — contém diagramas para comentários, whitespace, strings, números, literais lógicos, keywords, identificadores, operadores e delimitadores.
+- Implementações AFD (módulos): `Semana 5/afds/` — cada função `accepts_*` tenta corresponder uma lexema e retorna o tipo de token quando casa; por exemplo:
+    - `number_afd.py` → `NUMERO_LITERAL`
+    - `string_afd.py` → `STRING_LITERAL`
+    - `identifier_afd.py` → `IDENTIFICADOR` / `IDENTIFICADOR_INVALIDO`
+    - `logical_afd.py` → `LOGICO_LITERAL`
+    - `keywords_afd.py` → `PALAVRA_CHAVE`
+    - `operators_afd.py` → `OP` (aritmético/relacional)
+    - `delimiters_afd.py` → `LPAREN`, `RPAREN`, `COMMA`, `DOT`, etc.
+    - `comment_afd.py`, `whitespace_afd.py`, `newline_afd.py` — tratamento apropriado
+
+Status atual e recomendações rápidas:
+- Diagramas: existentes e alinhados com as regex da especificação.
+- AFDs: implementados como funções independentes e cobertos por `Semana 5/test_afds.py`.
+- Minimização de AFD: ainda não implementada — recomendo adicionar `afds/minimization.py` (Hopcroft) como próxima tarefa.
+- Lexer determinístico unificado: atualmente o `lexer.py` usa uma master-regex; para completar o objetivo da semana (converter regex em AFDs e usar DFAs em produção) recomenda-se implementar um `dfa_lexer.py` que utilize as AFDs ou as tabelas de transição construídas a partir delas e que execute longest-match respeitando prioridades.
+
+Como testar rapidamente (PowerShell):
+```powershell
+# rodar testes dos AFDs
+python -m pytest -q "Semana 5/test_afds.py"
+
+# rodar os testes do lexer atual (regex-based)
+python -m pytest -q "Semana 5/test_lexer.py"
+```
+
+Próximos passos sugeridos para entrega final da semana:
+1. Implementar o lexer baseado em DFA (`dfa_lexer.py`) que consuma as AFDs e passe na suíte de testes atual.
+2. Implementar minimização (Hopcroft) e documentar ganhos (tamanho de DFA antes/depois).
+3. Adicionar um script de comparação que valide equivalência (tokens) entre `lexer.py` e `dfa_lexer.py` em um conjunto de casos de teste.
+
+Com isso a Semana 5 ficará coerente com os objetivos: diagramas, AFDs funcionais, testes unitários e plano para minimização/integração.

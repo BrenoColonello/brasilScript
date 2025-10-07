@@ -10,6 +10,9 @@ from .operators_afd import (
     accepts_op_relacional_single,
     accepts_op_aritmetico,
 )
+from .newline_afd import accepts_newline
+from .keywords_afd import accepts_kw
+from .delimiters_afd import accepts_delimiter
 
 __all__ = [
     "accepts_numero_literal",
@@ -22,4 +25,7 @@ __all__ = [
     "accepts_op_relacional_multi",
     "accepts_op_relacional_single",
     "accepts_op_aritmetico",
+    "accepts_newline",
+    "accepts_kw",
+    "accepts_delimiter",
 ]

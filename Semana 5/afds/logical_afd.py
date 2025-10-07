@@ -1,3 +1,5 @@
-def accepts_logico_literal(s: str) -> bool:
-    """AFD for logical literals: \b(?:verdadeiro|falso)\b"""
-    return s == "verdadeiro" or s == "falso"
+from .token_types import LOGICO_LITERAL
+
+
+def accepts_logico_literal(s: str):
+    return LOGICO_LITERAL if s == "verdadeiro" or s == "falso" else None

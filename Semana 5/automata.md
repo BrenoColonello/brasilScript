@@ -261,3 +261,12 @@ Esta ordem garante que:
 - Tokens `MISMATCH` geram `LexerError`
 - O lexer normaliza tipos: `KW` → `PALAVRA_CHAVE`, `OP_*` → `OP`
 - Quebras de linha em tokens são tratadas para contagem correta de posição
+
+## Minimização de AFD (Semana 5 extras)
+
+Implementamos uma versão didática do algoritmo de minimização de AFD (Hopcroft) em `Semana 5/afds/minimization.py`.
+
+- Exemplos: `Semana 5/afds/example_dfas.py` contém DFAs simples (identificador e número) usados para demonstração.
+- Testes: `Semana 5/test_minimization.py` demonstra que a minimização preserva a linguagem de entrada e normalmente reduz o número de estados.
+
+Observação: a implementação é intencionalmente simples e usa representações em dicionários; para produção, converta para representações mais compactas e otimizadas.

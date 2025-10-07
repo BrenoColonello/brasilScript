@@ -1,10 +1,13 @@
-def accepts_op_relacional_multi(s: str) -> bool:
-    return s in ("!=", "<=", ">=")
+from .token_types import OP
 
 
-def accepts_op_relacional_single(s: str) -> bool:
-    return s in ("=", "<", ">")
+def accepts_op_relacional_multi(s: str):
+    return OP if s in ("!=", "<=", ">=") else None
 
 
-def accepts_op_aritmetico(s: str) -> bool:
-    return len(s) == 1 and s in "+-*/%"
+def accepts_op_relacional_single(s: str):
+    return OP if s in ("=", "<", ">") else None
+
+
+def accepts_op_aritmetico(s: str):
+    return OP if len(s) == 1 and s in "+-*/%" else None
