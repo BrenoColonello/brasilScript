@@ -1,11 +1,18 @@
-"""Subset construction: convert AFN (NFA with epsilons) to AFD (DFA).
-
-Same implementation as the project src version, adapted to sit inside `Semana 6`.
+"""
+Subset construction: converte um AFN (com transições epsilon) em um AFD (DFA).
+Esse arquivo implementa o algoritmo clássico de construção de subconjuntos,
+partindo do novo estado inicial global do AFN (que tem transições epsilon para cada token).
 """
 from typing import Dict, Set, Any, Tuple, List, FrozenSet
 
 
 def epsilon_closure(states: Set[Any], delta: Dict) -> Set[Any]:
+    """
+    Calcula o epsilon-closure de um conjunto de estados:
+    - Para cada estado, segue todas as transições epsilon (None) recursivamente,
+      incluindo todos os estados alcançáveis sem consumir símbolo.
+    - Usado para saber todos os estados possíveis do AFN ao iniciar ou após cada transição.
+    """
     stack = list(states)
     closure = set(states)
     while stack:
@@ -26,6 +33,14 @@ def move(states: Set[Any], symbol: str, delta: Dict) -> Set[Any]:
 
 
 def nfa_to_dfa(nfa: Dict[str, Any], token_priority: List[str]) -> Dict[str, Any]:
+    """
+    Algoritmo de subset construction:
+    - Começa do epsilon-closure do novo estado inicial global do AFN (que tem transições epsilon para todos os tokens).
+    - Cada estado do AFD é um conjunto de estados do AFN.
+    - Para cada símbolo, calcula o conjunto de estados alcançáveis (move) e depois o epsilon-closure desse conjunto.
+    - Marca como estado de aceitação se algum estado do conjunto for de aceitação no AFN, usando a prioridade dos tokens.
+    - Gera a tabela de transições do AFD.
+    """
     delta = nfa["delta"]
     alphabet = set(nfa["alphabet"]) - {None}
     start_closure = frozenset(epsilon_closure({nfa["start"]}, delta))
@@ -36,6 +51,8 @@ def nfa_to_dfa(nfa: Dict[str, Any], token_priority: List[str]) -> Dict[str, Any]
     daccepts: Dict[FrozenSet[Any], str] = {}
 
     def choose_token(dstate: FrozenSet[Any]) -> str:
+        # Para um estado do AFD (conjunto de estados do AFN),
+        # retorna o token de maior prioridade entre os estados de aceitação presentes.
         found = []
         for s in dstate:
             if s in nfa.get("accepts", {}):
@@ -62,6 +79,7 @@ def nfa_to_dfa(nfa: Dict[str, Any], token_priority: List[str]) -> Dict[str, Any]
                 dstates.append(Uf)
                 unmarked.append(Uf)
 
+    # Mapeia conjuntos de estados do AFN para nomes de estados do AFD
     state_ids = {s: f"S{idx}" for idx, s in enumerate(dstates)}
     dfa_states = set(state_ids.values())
     dfa_delta = {state_ids[s]: {a: state_ids[t] for a, t in ddelta.get(s, {}).items()} for s in dstates}
