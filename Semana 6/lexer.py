@@ -7,6 +7,10 @@ import sys
 from typing import List, Tuple
 from nfas import make_basic_nfa_for_identifier, make_basic_nfa_for_number, make_basic_nfa_for_operators, combine_nfas
 from afn_to_afd import nfa_to_dfa
+from dataclasses import dataclass
+from collections import deque
+import itertools
+from typing import Optional, Iterator
 
 # Prioridade dos tokens (ordem para resolver conflitos)
 TOKEN_PRIORITY = [
@@ -80,6 +84,168 @@ def tokenize_with_afd(dfa, text: str) -> List[Tuple[str, str]]:
         tokens.append((last_accept_tok, lexeme))
         pos = last_accept_pos + 1
     return tokens
+
+
+
+
+
+@dataclass
+class Token:
+    type: str
+    lexeme: str
+    pos: int
+    line: int = 0
+    col: int = 0
+    value: object = None
+
+
+class Lexer:
+    """Buffered lexer using the AFD produced from the AFN global.
+
+    - Implements maximal-munch (longest match) using the AFD table.
+    - Provides next_token() and peek() with simple buffering.
+    """
+
+    def __init__(self, dfa: dict, text: str):
+        self.dfa = dfa
+        self.text = text
+        self.pos = 0
+        self.N = len(text)
+        self.buffer = deque()
+        # position tracking
+        self.line = 1
+        self.col = 1
+        # tokens the lexer will skip by default (parser usually doesn't need them)
+        self.skip_types = {"WHITESPACE", "COMMENT"}
+
+    def _scan_one(self) -> Optional[Token]:
+        if self.pos >= self.N:
+            return None
+        delta = self.dfa["delta"]
+        accepts = self.dfa["accepts"]
+        start = self.dfa["start"]
+        cur_state = start
+        last_accept_pos = -1
+        last_accept_tok = None
+        i = self.pos
+        # temporary line/col for scanning ahead (do not modify self.line/self.col until commit)
+        tline = self.line
+        tcol = self.col
+        last_accept_line = tline
+        last_accept_col = tcol
+        while i < self.N:
+            c = self.text[i]
+            cur_state = delta.get(cur_state, {}).get(c)
+            if cur_state is None:
+                break
+            if cur_state in accepts:
+                last_accept_pos = i
+                last_accept_tok = accepts[cur_state]
+                last_accept_line = tline
+                last_accept_col = tcol
+            i += 1
+            # update temp line/col as we consumed c
+            if c == "\n":
+                tline += 1
+                tcol = 1
+            else:
+                tcol += 1
+
+        if last_accept_pos < 0:
+            # single-character mismatch
+            ch = self.text[self.pos]
+            tok = Token("MISMATCH", ch, self.pos, self.line, self.col)
+            # advance position by one and update line/col
+            if ch == "\n":
+                self.line += 1
+                self.col = 1
+            else:
+                self.col += 1
+            self.pos += 1
+            return tok
+
+        lexeme = self.text[self.pos:last_accept_pos+1]
+        tok = Token(last_accept_tok, lexeme, self.pos, last_accept_line, last_accept_col)
+
+        # set token.value for useful token types
+        if last_accept_tok == "NUMERO_LITERAL":
+            # try int then float
+            s = lexeme
+            try:
+                if ("." in s) or ("e" in s) or ("E" in s):
+                    tok.value = float(s)
+                else:
+                    tok.value = int(s)
+            except Exception:
+                tok.value = s
+        elif last_accept_tok == "STRING_LITERAL":
+            # strip surrounding quotes and unescape simple escapes
+            if len(lexeme) >= 2 and lexeme[0] == lexeme[-1] and lexeme[0] in ('"', "'"):
+                inner = lexeme[1:-1]
+                inner = inner.replace('\\n', '\n').replace('\\t', '\t').replace('\\"', '"').replace("\\'", "'").replace('\\\\', '\\')
+                tok.value = inner
+            else:
+                tok.value = lexeme
+        elif last_accept_tok == "COMMENT":
+            # store comment without leading '#'
+            tok.value = lexeme[1:]
+
+        # advance self.pos and update line/col to the end of the lexeme
+        # use tline/tcol which reflect position after i advanced
+        # compute end line/col by replaying characters from current pos to last_accept_pos
+        e_line = self.line
+        e_col = self.col
+        for ch in self.text[self.pos:last_accept_pos+1]:
+            if ch == '\n':
+                e_line += 1
+                e_col = 1
+            else:
+                e_col += 1
+        self.line = e_line
+        self.col = e_col
+        self.pos = last_accept_pos + 1
+        return tok
+
+    def next_token(self) -> Optional[Token]:
+        if self.buffer:
+            return self.buffer.popleft()
+        while True:
+            tok = self._scan_one()
+            if tok is None:
+                return None
+            if tok.type in self.skip_types:
+                # skip and continue to next
+                continue
+            return tok
+
+    def peek(self, k=1) -> List[Optional[Token]]:
+        # ensure buffer has k tokens
+        while len(self.buffer) < k:
+            t = self._scan_one()
+            if t is None:
+                self.buffer.append(None)
+                break
+            # if the token is skippable, push it but mark for skipping on consumption
+            self.buffer.append(t)
+        # return exactly k items (pad with None if needed)
+        res = []
+        for i in range(k):
+            res.append(self.buffer[i] if i < len(self.buffer) else None)
+        return res
+
+
+def simple_parser(lexer: Lexer) -> None:
+    """Pequena função demonstrativa de integração com o analisador sintático.
+
+    Apenas consome tokens e imprime uma estrutura simples (exemplo).
+    """
+    print(">>> Parser: iniciando consumo de tokens")
+    while True:
+        t = lexer.next_token()
+        if t is None:
+            break
+        print(f"NODE: {t.type} -> {t.lexeme!r} @ {t.pos}")
+    print(">>> Parser: fim")
 
 
 def _exemplos_dir() -> str:

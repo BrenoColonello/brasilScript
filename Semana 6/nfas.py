@@ -162,10 +162,10 @@ def combine_nfas(nfas):
             delta.setdefault(s, {})
             for a, tgt in trans.items():
                 delta[s].setdefault(a, set()).update(tgt)
-    # Adiciona transição epsilon do novo estado inicial para o início de cada NFA
-    # Isso permite que o AFN global tente reconhecer qualquer token a partir do início
-    delta[start][None].add(nfa["start"])
-    accepts.update(nfa.get("accepts", {}))
+        # Adiciona transição epsilon do novo estado inicial para o início de cada NFA
+        # Isso permite que o AFN global tente reconhecer qualquer token a partir do início
+        delta[start][None].add(nfa["start"])
+        accepts.update(nfa.get("accepts", {}))
     states.add(start)
     return {"states": states, "alphabet": alphabet, "delta": delta, "start": start, "accepts": accepts}
 
