@@ -294,18 +294,16 @@ class BrasilScriptParser:
     def parse_type(self) -> str:
         """Type = "numero" | "texto" | "logico" | "lista" [ "[" Type "]" ]"""
         current = self.peek()
-        if current.value in ["numero", "texto", "logico"]:
-            return self.advance().value
-        elif current.value == "lista":
-            self.advance()
-            if self.match("["):
+        if current.type == "PALAVRA_CHAVE" and current.value in ["numero", "texto", "logico", "lista"]:
+            type_name = self.advance().value
+            if type_name == "lista" and self.match("["):
                 self.consume("[")
                 element_type = self.parse_type()
                 self.consume("]")
                 return f"lista[{element_type}]"
-            return "lista"
+            return type_name
         else:
-            raise ParseError(f"Tipo esperado, encontrado '{current.value}'")
+            raise ParseError(f"Tipo esperado, encontrado '{current.type}:{current.value}'")
     
     def parse_assignment(self) -> Assignment:
         """Assignment = Identifier "=" Expression"""
