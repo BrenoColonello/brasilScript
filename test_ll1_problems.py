@@ -17,10 +17,10 @@ from src.parser.brasilscript_parser import parse_brasilscript, ParseError
 def test_ambiguity_cases():
     """Testa casos que demonstram a não-LL(1) natureza da gramática"""
     
-    print("🔍 Demonstração de Problemas LL(1) na Gramática BrasilScript")
+    print(" Demonstração de Problemas LL(1) na Gramática BrasilScript")
     print("=" * 65)
     
-    print("\n1. 🚨 PROBLEMA: Ambiguidade entre Assignment e Function Call")
+    print("\n1.  PROBLEMA: Ambiguidade entre Assignment e Function Call")
     print("-" * 60)
     
     # Casos problemáticos: o parser precisa de mais de 1 token de lookahead
@@ -49,25 +49,25 @@ def test_ambiguity_cases():
             print(f"Segundo token: {second_token}")
             
             if first_token and first_token[0] == "IDENTIFICADOR":
-                print("⚠️  PROBLEMA LL(1): Com apenas o primeiro token (IDENTIFICADOR),")
+                print("  PROBLEMA LL(1): Com apenas o primeiro token (IDENTIFICADOR),")
                 print("   não é possível decidir entre <Assignment> ou <FuncCall>")
                 print("   É necessário lookahead de 2 tokens para ver se vem '=' ou '('")
             
             # Tentar fazer o parse
             try:
                 ast = parse_brasilscript(code)
-                print("✅ Parser atual conseguiu processar (com lookahead implementado)")
+                print(" Parser atual conseguiu processar (com lookahead implementado)")
                 if ast.statements:
                     print(f"   Resultado: {type(ast.statements[0]).__name__}")
             except Exception as e:
-                print(f"❌ Erro no parser: {e}")
+                print(f" Erro no parser: {e}")
                 
         except Exception as e:
-            print(f"❌ Erro no lexer: {e}")
+            print(f" Erro no lexer: {e}")
         
         print()
     
-    print("\n2. 🚨 PROBLEMA: Ambiguidade em Factor")
+    print("\n2.  PROBLEMA: Ambiguidade em Factor")
     print("-" * 40)
     
     factor_cases = [
@@ -86,14 +86,14 @@ def test_ambiguity_cases():
             print("Tokens:", [f"{t[0]}:{t[1]}" for t in clean_tokens])
             
             if clean_tokens and clean_tokens[0][0] == "IDENTIFICADOR":
-                print("⚠️  PROBLEMA LL(1): Todos começam com IDENTIFICADOR")
-                print("   Parser LL(1) não consegue decidir qual produção de <Factor> usar")
-                print("   Precisa ver o próximo token: '(', '[', ou fim da expressão")
+                print(" PROBLEMA LL(1): Todos começam com IDENTIFICADOR")
+                print("  Parser LL(1) não consegue decidir qual produção de <Factor> usar")
+                print(" Precisa ver o próximo token: '(', '[', ou fim da expressão")
         
         except Exception as e:
-            print(f"❌ Erro no lexer: {e}")
+            print(f"Erro no lexer: {e}")
     
-    print("\n3. 📊 Análise de Lookahead Necessário")
+    print("\n3.  Análise de Lookahead Necessário")
     print("-" * 45)
     
     lookahead_examples = [
@@ -110,7 +110,7 @@ def test_ambiguity_cases():
     for code, k, analysis in lookahead_examples:
         print(f"{code:<20} | {k}  | {analysis}")
     
-    print("\n4. 💡 Soluções Possíveis")
+    print("\n4. Soluções Possíveis")
     print("-" * 30)
     
     solutions = [
@@ -123,7 +123,7 @@ def test_ambiguity_cases():
     for solution in solutions:
         print(f"  {solution}")
     
-    print("\n5. 🎯 Conclusão")
+    print("\n5.  Conclusão")
     print("-" * 15)
     print("A gramática BrasilScript atual NÃO é LL(1) devido a:")
     print("  • Ambiguidade entre Assignment e Function Call")
