@@ -7,8 +7,8 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.lexer.lexer import tokenize_text
-from src.parser.brasilscript_parser import parse_brasilscript, ParseError
+from lexer.lexer import tokenize_text
+from parser.brasilscript_parser import parse_brasilscript, ParseError
 
 
 def test_lexer():

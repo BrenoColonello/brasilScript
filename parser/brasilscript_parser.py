@@ -6,11 +6,11 @@ a gramática formal definida para o BrasilScript.
 """
 
 from typing import List, Optional, Any, Union
-from dataclasses import dataclass
 from enum import Enum
+from dataclasses import dataclass
 
-# Assumindo que temos o lexer disponível
-from src.lexer.lexer import tokenize_text
+# Assumindo que temos o lexer disponível (pacote top-level `lexer`)
+from lexer.lexer import tokenize_text
 
 
 class TokenType(Enum):
@@ -43,120 +43,113 @@ class Token:
     column: int = 0
 
 
-# Nós da AST (Abstract Syntax Tree)
-@dataclass
-class ASTNode:
-    """Classe base para todos os nós da AST"""
-    pass
+# Nós da AST (tentar importar do módulo compartilhado `src.parser.ast`)
+try:
+    from src.parser.ast import (
+        Program, Declaration, Assignment, FunctionDecl, IfStatement,
+        WhileStatement, RepeatStatement, ForEachStatement, PrintStatement,
+        InputStatement, ReturnStatement, FunctionCall, BinaryOperation,
+        UnaryOperation, Literal, Identifier, ListLiteral, IndexAccess
+    )
+except Exception:
+    # Import fallback (mantém as definições locais caso o módulo não esteja disponível)
+    from dataclasses import dataclass
+    from typing import List, Optional, Union
 
+    @dataclass
+    class ASTNode:
+        pass
 
-@dataclass
-class Program(ASTNode):
-    statements: List[ASTNode]
+    @dataclass
+    class Program(ASTNode):
+        statements: List[ASTNode]
 
+    @dataclass
+    class Declaration(ASTNode):
+        identifier: str
+        type_name: str
+        initial_value: Optional[ASTNode] = None
 
-@dataclass
-class Declaration(ASTNode):
-    identifier: str
-    type_name: str
-    initial_value: Optional[ASTNode] = None
+    @dataclass
+    class Assignment(ASTNode):
+        identifier: str
+        value: ASTNode
 
+    @dataclass
+    class FunctionDecl(ASTNode):
+        name: str
+        parameters: List[str]
+        body: List[ASTNode]
 
-@dataclass
-class Assignment(ASTNode):
-    identifier: str
-    value: ASTNode
+    @dataclass
+    class IfStatement(ASTNode):
+        condition: ASTNode
+        then_block: List[ASTNode]
+        else_ifs: List[tuple]
+        else_block: Optional[List[ASTNode]] = None
 
+    @dataclass
+    class WhileStatement(ASTNode):
+        condition: ASTNode
+        body: List[ASTNode]
 
-@dataclass
-class FunctionDecl(ASTNode):
-    name: str
-    parameters: List[str]
-    body: List[ASTNode]
+    @dataclass
+    class RepeatStatement(ASTNode):
+        count: ASTNode
+        body: List[ASTNode]
 
+    @dataclass
+    class ForEachStatement(ASTNode):
+        variable: str
+        iterable: ASTNode
+        body: List[ASTNode]
 
-@dataclass
-class IfStatement(ASTNode):
-    condition: ASTNode
-    then_block: List[ASTNode]
-    else_ifs: List[tuple]  # (condition, block)
-    else_block: Optional[List[ASTNode]] = None
+    @dataclass
+    class PrintStatement(ASTNode):
+        expressions: List[ASTNode]
 
+    @dataclass
+    class InputStatement(ASTNode):
+        prompt: ASTNode
+        variable: str
 
-@dataclass
-class WhileStatement(ASTNode):
-    condition: ASTNode
-    body: List[ASTNode]
+    @dataclass
+    class ReturnStatement(ASTNode):
+        value: Optional[ASTNode] = None
 
+    @dataclass
+    class FunctionCall(ASTNode):
+        name: str
+        arguments: List[ASTNode]
 
-@dataclass
-class RepeatStatement(ASTNode):
-    count: ASTNode
-    body: List[ASTNode]
+    @dataclass
+    class BinaryOperation(ASTNode):
+        left: ASTNode
+        operator: str
+        right: ASTNode
 
+    @dataclass
+    class UnaryOperation(ASTNode):
+        operator: str
+        operand: ASTNode
 
-@dataclass
-class ForEachStatement(ASTNode):
-    variable: str
-    iterable: ASTNode
-    body: List[ASTNode]
+    @dataclass
+    class Literal(ASTNode):
+        value: Union[int, float, str, bool]
+        type: str
 
+    @dataclass
+    class Identifier(ASTNode):
+        name: str
 
-@dataclass
-class PrintStatement(ASTNode):
-    expressions: List[ASTNode]
+    @dataclass
+    class ListLiteral(ASTNode):
+        elements: List[ASTNode]
 
-
-@dataclass
-class InputStatement(ASTNode):
-    prompt: ASTNode
-    variable: str
-
-
-@dataclass
-class ReturnStatement(ASTNode):
-    value: Optional[ASTNode] = None
-
-
-@dataclass
-class FunctionCall(ASTNode):
-    name: str
-    arguments: List[ASTNode]
-
-
-@dataclass
-class BinaryOperation(ASTNode):
-    left: ASTNode
-    operator: str
-    right: ASTNode
-
-
-@dataclass
-class UnaryOperation(ASTNode):
-    operator: str
-    operand: ASTNode
-
-
-@dataclass
-class Literal(ASTNode):
-    value: Union[int, float, str, bool]
-    type: str
-
-
-@dataclass
-class Identifier(ASTNode):
-    name: str
-
-
-@dataclass
-class ListLiteral(ASTNode):
-    elements: List[ASTNode]
-
-
-@dataclass
-class IndexAccess(ASTNode):
-    object: ASTNode
-    index: ASTNode
+    @dataclass
+    class IndexAccess(ASTNode):
+        object: ASTNode
+        index: ASTNode
 
 
 class ParseError(Exception):
