@@ -3,5 +3,6 @@
 
  mostrar "Ola, mundo!"
  mostrar "Bem-vindo a BrasilScript!"
+  declarar = a
 mostrar 3321 + 1239
 #&&@!
