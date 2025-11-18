@@ -1,0 +1,4 @@
+# Arquivo com erro lexico (caractere invalido)
+mostrar 'Teste'
+nome = 'João'
+mostrar nome

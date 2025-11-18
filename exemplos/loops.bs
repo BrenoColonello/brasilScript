@@ -1,0 +1,14 @@
+# Exemplos de loops
+
+declarar i como numero = 0
+repetir 5 vezes
+    mostrar i
+    i = i + 1
+fim_repetir
+
+# while example
+declarar j como numero = 0
+enquanto j < 3 faca
+    mostrar j
+    j = j + 1
+fim_enquanto

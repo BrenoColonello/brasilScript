@@ -1,0 +1,7 @@
+funcao soma(a, b)
+  retornar a - b
+fim_funcao
+
+ declarar resultado como numero  = soma(3, 4)
+mostrar resultado
+

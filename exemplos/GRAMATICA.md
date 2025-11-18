@@ -176,4 +176,4 @@ PYTHONPATH=. python3 run_parser.py --print-ast exemplos/hello_world.bs
 
 - Mensagens semânticas e de tipo são emitidas pelo `parser/semantic.py`.
 
-Se quiser, eu posso gerar um arquivo adicional com exemplos de teste (vários `.bs`) ou converter este documento para `docs/GRAMATICA.md`. Quer que eu também coloque este arquivo em `docs/`?"
+

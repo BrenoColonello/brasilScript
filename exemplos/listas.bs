@@ -1,0 +1,8 @@
+# Listas e indexacao
+
+declarar nomes como lista[texto] = ["ana", "beto", "carlos"]
+mostrar nomes[0]
+mostrar nomes[2]
+
+# acesso invalido por indice
+mostrar nomes[1]

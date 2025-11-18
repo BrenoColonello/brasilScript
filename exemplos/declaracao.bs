@@ -1,0 +1,8 @@
+# Declaracoes e atribuicoes
+
+declarar preco como numero = 19.99
+mostrar preco
+
+declarar nome como texto
+nome = "BrasilScript"
+mostrar "Nome: " + nome

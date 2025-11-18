@@ -308,7 +308,36 @@ def tokenize(dfa: Dict[str, Any], text: str):
                 last_accept_tok = accepts[cur_state]
             i += 1
         if last_accept_pos < 0:
-            raise ValueError(f"Unexpected character at {pos}: {text[pos]!r}")
+            # Compute human-friendly line/column and show snippet with caret
+            err_pos = pos
+            ch = text[pos]
+            line = text.count('\n', 0, err_pos) + 1
+            # column: distance from previous newline (1-based)
+            last_nl = text.rfind('\n', 0, err_pos)
+            col = err_pos - last_nl
+            # snippet around error
+            start = max(0, err_pos - 40)
+            end = min(N, err_pos + 40)
+            snippet = text[start:end].replace('\t', '\\t')
+            pointer = ' ' * (err_pos - start) + '^'
+            # Try to find an earlier non-ASCII or likely-invalid character in the snippet
+            suspect_pos = None
+            for i in range(start, err_pos):
+                try:
+                    if ord(text[i]) > 127:
+                        suspect_pos = i
+                        break
+                except Exception:
+                    suspect_pos = i
+                    break
+            suspect_info = ''
+            if suspect_pos is not None:
+                suspect_ch = text[suspect_pos]
+                s_line = text.count('\n', 0, suspect_pos) + 1
+                s_last_nl = text.rfind('\n', 0, suspect_pos)
+                s_col = suspect_pos - s_last_nl
+                suspect_info = f"\nPossible invalid character at {suspect_pos}: {suspect_ch!r} (line {s_line}, column {s_col})"
+            raise ValueError(f"Unexpected character at {err_pos}: {ch!r} (line {line}, column {col})\n{snippet}\n{pointer}{suspect_info}")
         lexeme = text[pos:last_accept_pos + 1]
         out.append((last_accept_tok, lexeme))
         pos = last_accept_pos + 1
