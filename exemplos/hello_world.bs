@@ -1,8 +1,29 @@
  # Programa: Ola, Mundo!
  # Este e um exemplo basico da linguagem BrasilScript
 
- mostrar "Ola, mundo!"
- mostrar "Bem-vindo a BrasilScript!"
-  declarar = a
-mostrar 3321 + 1239
-#&&@!
+#mostrar "Ola, mundo!"
+#mostrar "Bem-vindo a BrasilScript!"
+#mostrar 3321 + 1239
+#declarar preco como numero
+#preco = 19.99
+#mostrar preco
+
+#enquanto preco < 25 faca
+  #mostrar "O preco e menor que 25."
+   #preco = preco + 1.0
+#fim_enquanto
+#mostrar "Preco final: " + preco + "\n"
+
+declarar num1 como numero = 10
+declarar num2 como numero  = 5
+declarar operacao como numero = 1
+declarar resultado como numero
+
+funcao somar(a, b)
+    declarar soma como numero
+    soma = a + b
+    retornar soma
+fim_funcao
+
+
+mostrar "Eu"

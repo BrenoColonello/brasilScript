@@ -8,6 +8,7 @@ a gramática formal definida para o BrasilScript.
 from typing import List, Optional, Any, Union
 from enum import Enum
 from dataclasses import dataclass
+#from parser.brasilscript_parser import parse_brasilscript, ParseError
 
 # Assumindo que temos o lexer disponível (pacote top-level `lexer`)
 from lexer.lexer import tokenize_text
@@ -41,7 +42,6 @@ class Token:
     value: str
     line: int = 0
     column: int = 0
-
 
 # Nós da AST (tentar importar do módulo compartilhado `src.parser.ast`)
 try:
@@ -163,6 +163,8 @@ class BrasilScriptParser:
     def __init__(self, tokens: List[Token]):
         self.tokens = tokens
         self.current = 0
+        # coletar erros não-fatais para permitir recuperação e construção de AST parcial
+        self.errors: List[str] = []
         
     def peek(self) -> Token:
         """Retorna o token atual sem consumir"""
@@ -205,12 +207,17 @@ class BrasilScriptParser:
         if expected.isupper():
             if current.type == expected:
                 return self.advance()
-            raise ParseError(f"Esperado token {expected}, encontrado {current.type}: '{current.value}'")
+            # registrar erro e tentar recuperar (consome o token atual)
+            msg = f"Esperado token {expected}, encontrado {current.type}: '{current.value}'"
+            self.errors.append(msg)
+            return self.advance()
         
         # Se esperamos um valor específico
         if current.value == expected:
             return self.advance()
-        raise ParseError(f"Esperado '{expected}', encontrado '{current.value}'")
+        msg = f"Esperado '{expected}', encontrado '{current.value}'"
+        self.errors.append(msg)
+        return self.advance()
     
     def parse(self) -> Program:
         """Ponto de entrada do parser - programa completo"""
@@ -265,8 +272,8 @@ class BrasilScriptParser:
             elif next_token and next_token.value == "(":
                 return self.parse_function_call()
         
-        # Se chegou aqui, não reconheceu o statement - pular este token
-        print(f"⚠️  Token não reconhecido: {current.type} = '{current.value}'")
+        # Se chegou aqui, não reconheceu o statement - registrar erro e pular token
+        self.errors.append(f"token invalido, digite da forma correta: {current.type} = '{current.value}'")
         self.advance()
         return None
     
@@ -296,7 +303,11 @@ class BrasilScriptParser:
                 return f"lista[{element_type}]"
             return type_name
         else:
-            raise ParseError(f"Tipo esperado, encontrado '{current.type}:{current.value}'")
+            msg = f"Tipo esperado, encontrado '{current.type}:{current.value}'"
+            self.errors.append(msg)
+            # tentar recuperar retornando um tipo genérico
+            self.advance()
+            return "any"
     
     def parse_assignment(self) -> Assignment:
         """Assignment = Identifier "=" Expression"""
@@ -567,13 +578,23 @@ class BrasilScriptParser:
             return UnaryOperation(operator, operand)
         
         else:
-            raise ParseError(f"Fator inesperado: '{current.value}'")
+            # registrar erro e produzir nó de erro (Literal com tipo 'error') para continuar
+            msg = f"Fator inesperado: '{current.value}'"
+            self.errors.append(msg)
+            self.advance()
+            return Literal(None, "error")
 
 
 def parse_brasilscript(code: str) -> Program:
     """Função de conveniência para fazer o parse de código BrasilScript"""
-    # Tokenizar o código
-    raw_tokens = tokenize_text(code)
+    # Tokenizar o código (capturar erros do lexer e transformar em ParseError amigável)
+    try:
+        raw_tokens = tokenize_text(code)
+    # ast = parse_brasilscript(code)
+    except ValueError as e:
+        # Fornece uma mensagem amigável em português quando o lexer encontra caractere inesperado
+        # Inclui a mensagem original do lexer para indicar posição/char inválido
+        raise ParseError(f"token invalido, digite da forma correta: {e}") from e
     
     # Converter para objetos Token (filtrando whitespace e comentários)
     tokens = []
@@ -584,9 +605,12 @@ def parse_brasilscript(code: str) -> Program:
     # Adicionar token EOF
     tokens.append(Token("EOF", ""))
     
-    # Fazer o parse
+    # Fazer o parse (o parser agora coleta erros não-fatais em parser.errors)
     parser = BrasilScriptParser(tokens)
-    return parser.parse()
+    program = parser.parse()
+    # Anexar erros (se houver) ao objeto AST para que o runner possa exibi-los
+    setattr(program, "_errors", parser.errors)
+    return program
 
 
 # Exemplo de uso

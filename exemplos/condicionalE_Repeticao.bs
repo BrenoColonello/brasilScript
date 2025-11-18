@@ -2,7 +2,7 @@ declarar ContadorLoop como numero
 ContadorLoop = 0
 
 enquanto ContadorLoop < 5 faca
-    se ContadorLoop % 2 = 0 entao
+    se ContadorLoop / 2 = 0 entao
         mostrar "numero par: " + ContadorLoop + "\n"
     senao
         mostrar "numero impar: " + ContadorLoop + "\n"
