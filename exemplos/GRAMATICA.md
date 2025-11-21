@@ -1,3 +1,8 @@
+
+# Rodar no CMD python
+PYTHONPATH=. python3 run_parser.py --print-ast erro_lexico.bs (adicionar nome do arquivo desejado)
+<p> Esse codigo gera a arvore e mostra tipos/valores e erros caso ocorra.
+
 # Gramática resumida — BrasilScript (exemplos)
 
 Este documento reúne as palavras-chave, os tipos de tokens e exemplos de uso da linguagem BrasilScript, conforme implementado no repositório.
