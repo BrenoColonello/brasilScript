@@ -17,12 +17,12 @@ from codegen import CodeGen
 
 
 def main(argv):
-    # Support flags: --print-ast, --emit-llvm and --run
+    # Suporta flags: --print-ast, --emit-llvm e --run
     examples_dir = Path("exemplos")
     print_ast = False
     emit_llvm = False
     run_exec = False
-    # collect CLI args after program name
+    # coleta argumentos da linha de comando depois do nome do programa
     cli_args = list(argv[1:])
     if '--print-ast' in cli_args:
         print_ast = True
@@ -47,7 +47,7 @@ def main(argv):
                 path = candidate_bs
             else:
                 print(f"Arquivo não encontrado: {requested}")
-                # show available examples to help the user
+                # mostra exemplos disponíveis para ajudar o usuário
                 if examples_dir.exists() and examples_dir.is_dir():
                     files = sorted([p.name for p in examples_dir.iterdir() if p.is_file() and p.suffix.lower() == ".bs"]) 
                     if files:
@@ -77,13 +77,13 @@ def main(argv):
     except ParseError as e:
         # Mensagem amigável já construída pelo parser
         print(f"Erro durante a análise: {e}")
-        # If user requested AST printing, show the error message and exit (no AST available)
+        # Se o usuário solicitou imprimir o AST, mostra a mensagem de erro e sai (nenhum AST disponível)
         if print_ast:
             print('\nNenhum AST gerado devido a erro léxico crítico.')
         return 1
  
     # 2) Análise semântica (tipos, declarações, etc.)
-    # If requested, print AST and any parse-time (non-fatal) errors collected by the parser
+    # Se solicitado, imprime o AST e quaisquer erros de parse (não fatais) coletados pelo parser
     if print_ast:
         print('\n--- AST ---')
         pprint(ast)
@@ -104,7 +104,7 @@ def main(argv):
         return 3
 
     print("Compilação estática: OK (sem erros léxicos, sintáticos ou semânticos)")
-    # emissao LLVM IR
+    # emissão de LLVM IR
     if emit_llvm:
         try:
             cg = CodeGen()
@@ -114,12 +114,12 @@ def main(argv):
                 f.write(str(module))
             print(f"LLVM IR escrito em: {out_name}")
 
-            # Try to compile to native executable with clang if available
+            # Tenta compilar para executável nativo com clang, se disponível
             clang_path = shutil.which('clang')
             if clang_path:
                 exe_name = Path(path).stem
                 try:
-                    print(f"Invoking clang to produce executable: {exe_name}")
+                    print(f"Invocando clang para produzir executável: {exe_name}")
                     res = subprocess.run([clang_path, out_name, '-O2', '-o', exe_name], check=True, capture_output=True, text=True)
                     print(f"Executável gerado: {exe_name}")
                     if run_exec:
@@ -130,12 +130,12 @@ def main(argv):
             else:
                 print("clang não encontrado no PATH; pulando compilação para executável.")
 
-            # Try to produce LLVM bitcode with llvm-as if available
+            # Tenta produzir bitcode LLVM com llvm-as, se disponível
             llvmas_path = shutil.which('llvm-as')
             if llvmas_path:
                 bc_name = Path(path).stem + '.bc'
                 try:
-                    print(f"Invoking llvm-as to produce bitcode: {bc_name}")
+                    print(f"Invocando llvm-as para produzir bitcode: {bc_name}")
                     res = subprocess.run([llvmas_path, out_name, '-o', bc_name], check=True, capture_output=True, text=True)
                     print(f"Bitcode escrito: {bc_name}")
                 except subprocess.CalledProcessError as e:

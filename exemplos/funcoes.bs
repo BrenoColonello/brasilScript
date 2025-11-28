@@ -8,3 +8,4 @@ declarar x como numero = 10
 declarar y como numero = 5
 declarar resultado como numero = soma(x, y)
 mostrar resultado
+

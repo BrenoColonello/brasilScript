@@ -1,4 +1,4 @@
 # Arquivo com erro lexico (caractere invalido)
-mostrar 'Teste'
-nome = 'João'
+mostrar "Teste"
+nome = "joao"
 mostrar nome

@@ -1,11 +1,11 @@
 """
-Usage:
+Uso:
     from codegen import CodeGen
     cg = CodeGen()
     module = cg.generate(program_ast)
     print(module)
 
-Requires: llvmlite
+Requer: llvmlite
     pip install llvmlite
 """
 from llvmlite import ir
@@ -17,12 +17,12 @@ class CodeGen:
         self.module = ir.Module(name="brasilscript")
         self.printf = None
         self.functions: Dict[str, ir.Function] = {}
-        # mapping current function name -> local symbol table (name->alloca)
+        # mapeamento nome da função atual -> tabela de símbolos local (nome->alloca)
         self.locals = {}
-        # helper for generating unique string names
+        # auxiliar para gerar nomes de strings únicos
         self._str_count = 0
 
-    # --- runtime declarations ---
+    # --- declarações de tempo de execução ---
     def declare_printf(self):
         if self.printf is None:
             voidptr_ty = ir.IntType(8).as_pointer()
@@ -31,7 +31,7 @@ class CodeGen:
         return self.printf
 
     def new_string_constant(self, value: str) -> ir.Constant:
-        # create a global constant C string and return char*
+        # cria uma constante global (string em C) e retorna char*
         name = f".str{self._str_count}"
         self._str_count += 1
         data = bytearray(value.encode("utf8")) + b"\x00"
@@ -41,34 +41,34 @@ class CodeGen:
         gvar.initializer = ir.Constant(arr_ty, data)
         return gvar.bitcast(ir.IntType(8).as_pointer())
 
-    # --- module/function creation ---
+    # --- criação de módulo/função ---
     def declare_function_prototypes(self, program):
-        # scan function decls and create prototypes (return double, params double)
+        # percorre declarações de função e cria protótipos (retorno double, parâmetros double)
         for stmt in program.statements:
             if type(stmt).__name__ == "FunctionDecl":
                 param_count = len(stmt.parameters)
                 func_ty = ir.FunctionType(ir.DoubleType(), [ir.DoubleType()] * param_count)
                 fn = ir.Function(self.module, func_ty, name=stmt.name)
-                # name parameters
+                # nomeia parâmetros
                 for i, name in enumerate(stmt.parameters):
                     fn.args[i].name = name
                 self.functions[stmt.name] = fn
 
     def generate(self, program):
-        # declare printf
+        # declara printf
         self.declare_printf()
-        # declare prototypes
+        # declara protótipos
         self.declare_function_prototypes(program)
-        # generate functions bodies
+        # gera corpos das funções
         for stmt in program.statements:
             if type(stmt).__name__ == "FunctionDecl":
                 self.gen_function(stmt)
-        # generate main function that executes top-level statements
+        # gera função main que executa statements de nível superior
         main_ty = ir.FunctionType(ir.IntType(32), [])
         main_fn = ir.Function(self.module, main_ty, name="main")
         block = main_fn.append_basic_block(name="entry")
         builder = ir.IRBuilder(block)
-        # setup locals table for main
+        # configura tabela de locais (variáveis) para main
         self.locals = {}
         self._builder = builder
         for stmt in program.statements:
@@ -77,9 +77,9 @@ class CodeGen:
         builder.ret(ir.Constant(ir.IntType(32), 0))
         return self.module
 
-    # --- helpers to manage locals ---
+    # --- auxiliares para gerenciar variáveis locais ---
     def alloc_local(self, name: str):
-        # allocate in current function entry
+        # aloca na entrada da função atual
         builder = self._builder
         ptr = builder.alloca(ir.DoubleType(), name=name)
         self.locals[name] = ptr
@@ -88,7 +88,7 @@ class CodeGen:
     def get_local(self, name: str):
         return self.locals.get(name)
 
-    # --- code generation for statements ---
+    # --- geração de código para statements ---
     def gen_statement(self, stmt):
         kind = type(stmt).__name__
         if kind == "Declaration":
@@ -104,30 +104,30 @@ class CodeGen:
         elif kind == "RepeatStatement":
             self.gen_repeat(stmt)
         elif kind == "ReturnStatement":
-            # return only valid inside functions - ignore at module level
+            # return válido apenas dentro de funções - ignorar no nível do módulo
             pass
         else:
-            # unsupported statements: ForEach, FunctionCall at top-level
+            # statements não suportados: ForEach, FunctionCall no nível superior
             if kind == "FunctionCall":
                 self.gen_function_call(stmt)
             else:
-                # ignore other statements for now
+                # ignorar outros statements por enquanto
                 pass
 
     def gen_declaration(self, decl):
         ptr = self.alloc_local(decl.identifier)
         if decl.initial_value is not None:
             val = self.gen_expr(decl.initial_value)
-            # attempt to store double
+            # tenta armazenar double
             if val.type == ir.DoubleType():
                 self._builder.store(val, ptr)
             else:
-                # try to convert i1 to double
+                # tenta converter i1 para double
                 if isinstance(val.type, ir.IntType) and val.type.width == 1:
                     conv = self._builder.uitofp(val, ir.DoubleType())
                     self._builder.store(conv, ptr)
                 else:
-                    # unsupported type, store 0.0
+                    # tipo não suportado, armazena 0.0
                     self._builder.store(ir.Constant(ir.DoubleType(), 0.0), ptr)
 
     def gen_assignment(self, stmt):
@@ -142,27 +142,27 @@ class CodeGen:
                 conv = self._builder.uitofp(val, ir.DoubleType())
                 self._builder.store(conv, ptr)
             else:
-                # unsupported - store 0
+                # não suportado - armazena 0
                 self._builder.store(ir.Constant(ir.DoubleType(), 0.0), ptr)
 
     def gen_print(self, stmt):
         printf = self.declare_printf()
         for expr in stmt.expressions:
-            # if it's a literal texto
+            # se for um literal texto
             from parser.ast import Literal
             if isinstance(expr, Literal) and expr.type == "texto":
                 ptr = self.new_string_constant(expr.value)
                 fmt = ptr
-                # call printf with single string
+                # chama printf com string única
                 self._builder.call(printf, [fmt])
             else:
-                # treat as number
+                # tratar como número
                 val = self.gen_expr(expr)
-                # create format string "%f\n"
+                # cria string de formato "%f\n"
                 fmtptr = self.new_string_constant("%f\n")
                 self._builder.call(printf, [fmtptr, val])
 
-    # --- expressions ---
+    # --- expressões ---
     def gen_expr(self, node):
         from parser.ast import Literal, Identifier, BinaryOperation, UnaryOperation, FunctionCall
         if isinstance(node, Literal):
@@ -172,12 +172,12 @@ class CodeGen:
                 return self.new_string_constant(node.value)
             if node.type == "logico":
                 return ir.Constant(ir.IntType(1), 1 if node.value else 0)
-            # fallback
+            # fallback / caso padrão
             return ir.Constant(ir.DoubleType(), 0.0)
         if isinstance(node, Identifier):
             ptr = self.get_local(node.name)
             if ptr is None:
-                # implicit zero-initialized
+                # inicializa implicitamente com zero
                 ptr = self.alloc_local(node.name)
                 self._builder.store(ir.Constant(ir.DoubleType(), 0.0), ptr)
             return self._builder.load(ptr)
@@ -187,11 +187,11 @@ class CodeGen:
             if op == "-":
                 return self._builder.fsub(ir.Constant(ir.DoubleType(), 0.0), val)
             if op == "nao":
-                # logical not: assume operand is i1 or convertible
+                # not lógico: assume operando é i1 ou conversível
                 if isinstance(val.type, ir.IntType) and val.type.width == 1:
                     return self._builder.not_(val)
                 else:
-                    # compare to zero
+                    # compara com zero
                     cmp = self._builder.fcmp_ordered('==', val, ir.Constant(ir.DoubleType(), 0.0))
                     return cmp
         if isinstance(node, BinaryOperation):
@@ -219,18 +219,18 @@ class CodeGen:
                     cmp = self._builder.fcmp_ordered('>', l, r)
                 else:
                     cmp = self._builder.fcmp_ordered('>=', l, r)
-                # return i1
+                # retorna i1
                 return cmp
-            # fallback
+            # fallback / padrão
             return l
         if isinstance(node, FunctionCall):
             fn = self.functions.get(node.name)
             if fn is None:
-                # unknown function - return 0.0
+                # função desconhecida - retorna 0.0
                 return ir.Constant(ir.DoubleType(), 0.0)
             args = [self._coerce_to_double(self.gen_expr(a)) for a in node.arguments]
             return self._builder.call(fn, args)
-        # default
+        # padrão
         return ir.Constant(ir.DoubleType(), 0.0)
 
     def _coerce_to_double(self, val):
@@ -240,10 +240,10 @@ class CodeGen:
             return self._builder.uitofp(val, ir.DoubleType())
         return val
 
-    # --- control flow ---
+    # --- fluxo de controle ---
     def gen_if(self, stmt):
         condv = self.gen_expr(stmt.condition)
-        # ensure i1
+        # garante i1
         if isinstance(condv.type, ir.DoubleType):
             cond = self._builder.fcmp_ordered('!=', condv, ir.Constant(ir.DoubleType(), 0.0))
         else:
@@ -259,9 +259,9 @@ class CodeGen:
         self._builder.branch(end_bb)
         # else/elseifs
         self._builder.position_at_end(else_bb)
-        # handle else_ifs sequentially by nesting (simple)
+        # trata apenas o primeiro else_if por simplicidade
         if stmt.else_ifs:
-            # only handle first else_if for simplicity
+            # apenas trata o primeiro else_if
             cond2, block2 = stmt.else_ifs[0]
             for s in block2:
                 self.gen_statement(s)
@@ -274,7 +274,7 @@ class CodeGen:
     def gen_while(self, stmt):
         loop_bb = self._builder.append_basic_block('loop')
         after_bb = self._builder.append_basic_block('loopend')
-        # initial branch
+        # branch inicial
         self._builder.branch(loop_bb)
         self._builder.position_at_end(loop_bb)
         condv = self.gen_expr(stmt.condition)
@@ -282,22 +282,22 @@ class CodeGen:
             cond = self._builder.fcmp_ordered('!=', condv, ir.Constant(ir.DoubleType(), 0.0))
         else:
             cond = condv
-        # body
+        # corpo
         for s in stmt.body:
             self.gen_statement(s)
-        # re-evaluate and branch
+        # reavalia e faz branch
         self._builder.cbranch(cond, loop_bb, after_bb)
         self._builder.position_at_end(after_bb)
 
     def gen_repeat(self, stmt):
-        # repeat N times -> translate to a simple counter loop
+        # repeat N vezes -> traduz para loop com contador simples
         cnt = self.gen_expr(stmt.count)
-        # coerce to int by truncating
+        # coerção para int por truncamento
         if isinstance(cnt.type, ir.DoubleType):
             n_int = self._builder.fptoui(cnt, ir.IntType(32))
         else:
             n_int = cnt
-        # alloc counter
+        # aloca contador
         cptr = self._builder.alloca(ir.IntType(32), name='rep_cnt')
         self._builder.store(ir.Constant(ir.IntType(32), 0), cptr)
         loop_bb = self._builder.append_basic_block('reploop')
@@ -307,36 +307,36 @@ class CodeGen:
         cur = self._builder.load(cptr)
         cmp = self._builder.icmp_unsigned('<', cur, n_int)
         self._builder.cbranch(cmp, loop_bb.append_basic_block('repl_body'), end_bb)
-        # body position fix
+        # ajuste de posição do corpo
         body_bb = loop_bb.get_next_block()
         self._builder.position_at_end(body_bb)
         for s in stmt.body:
             self.gen_statement(s)
-        # increment
+        # incremento
         cur2 = self._builder.add(cur, ir.Constant(ir.IntType(32), 1))
         self._builder.store(cur2, cptr)
         self._builder.branch(loop_bb)
         self._builder.position_at_end(end_bb)
 
-    # --- functions ---
+    # --- funções ---
     def gen_function(self, fdecl):
         fn = self.functions.get(fdecl.name)
         if fn is None:
             return
         block = fn.append_basic_block('entry')
         builder = ir.IRBuilder(block)
-        # save builder and locals
+        # salva builder e tabela de locais
         prev_builder = getattr(self, '_builder', None)
         prev_locals = self.locals
         self._builder = builder
         self.locals = {}
-        # incoming arguments
+        # argumentos de entrada
         for arg in fn.args:
-            # allocate local and store incoming
+            # aloca local e armazena argumento
             ptr = builder.alloca(ir.DoubleType(), name=arg.name)
             builder.store(arg, ptr)
             self.locals[arg.name] = ptr
-        # generate body
+        # gera corpo
         ret_val = None
         for s in fdecl.body:
             if type(s).__name__ == 'ReturnStatement':
@@ -352,14 +352,14 @@ class CodeGen:
             else:
                 self.gen_statement(s)
         if not ret_val:
-            # ensure function returns something
+            # garante que a função retorne algo
             builder.ret(ir.Constant(ir.DoubleType(), 0.0))
-        # restore
+        # restaura
         self._builder = prev_builder
         self.locals = prev_locals
 
     def gen_function_call(self, callnode):
-        # allow calling functions as statements
+        # permite chamada de função como statement
         fn = self.functions.get(callnode.name)
         if fn is None:
             return None

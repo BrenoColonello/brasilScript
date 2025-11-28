@@ -1,7 +1,4 @@
-"""Subset construction: convert AFN (NFA with epsilons) to AFD (DFA).
 
-Same implementation as the project src version, adapted to sit inside `src/lexer`.
-"""
 from typing import Dict, Set, Any, Tuple, List, FrozenSet
 
 

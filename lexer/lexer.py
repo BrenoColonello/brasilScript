@@ -1,17 +1,17 @@
-"""Final DFA-based lexer using subset-construction output.
+"""Lexer final baseado em AFD usando o resultado da construção por subconjuntos.
 
-This module builds simple NFAs for identifiers, numbers and operators,
-converts them to a single DFA using `afn_to_afd.nfa_to_dfa`, and exposes a
-`tokenize` function that performs maximal-munch tokenization on input text.
+Este módulo constrói AFNs simples para identificadores, números e operadores,
+converte-os para um único AFD usando `afn_to_afd.nfa_to_dfa`, e expõe uma
+função `tokenize` que realiza tokenização maximal-munch no texto de entrada.
 
-Note: This is a compact, educational implementation that focuses on
-readability over performance. It mirrors the Week 6 working code.
+Nota: esta é uma implementação compacta e educacional que prioriza
+legibilidade em vez de desempenho. Espelha o código da Semana 6.
 """
 from typing import Dict, Any, Tuple, List
 from .afn_to_afd import nfa_to_dfa, epsilon_closure, move
 
 
-# Token names used in the DFA accepts map
+# Nomes de tokens usados no mapa de estados de aceitação do AFD
 TOKENS = [
     "PALAVRA_CHAVE",
     "IDENTIFICADOR",
@@ -34,6 +34,7 @@ TOKENS = [
     "COMMENT",
     "NEWLINE",
 ]
+
 
 
 
@@ -222,7 +223,7 @@ def _make_basic_nfa_for_number(start_id=1000):
 
 
 def _make_basic_nfa_for_operators(start_id=2000):
-    # Create single-char operator NFAs for simplicity
+    # Cria NFAs para operadores (cada operador pode ter múltiplos caracteres) para simplicidade
     ops = ["+", "-", "*", "/", "=", "==", "<=", ">=", "<", ">", "!", "!=", "&&", "||"]
     delta = {}
     start = f"op{start_id}"
@@ -247,15 +248,15 @@ def _combine_nfas(nfas: List[Dict]) -> Dict:
     alphabet = set()
     accepts = {}
     for nfa in nfas:
-        # merge states
+        # mescla estados
         for s, trans in nfa["delta"].items():
             if s in delta:
-                # merge transitions
+                # mescla transições
                 for a, targets in trans.items():
                     delta[s].setdefault(a, set()).update(targets)
             else:
                 delta[s] = {k: set(v) for k, v in trans.items()}
-        # add epsilon from new start
+        # adiciona epsilon do novo start
         delta[base_start][None].add(nfa["start"])
         alphabet.update(nfa.get("alphabet", set()))
         accepts.update(nfa.get("accepts", {}))
@@ -276,7 +277,7 @@ def build_lexer_dfa() -> Dict[str, Any]:
         _make_basic_nfa_for_operators(),
         _make_nfa_delimiters(),
     ]
-    # Prioridade igual ao regex lexer
+    # Prioridade igual ao lexer por regex
     token_priority = [
         "NEWLINE", "COMMENT", "WHITESPACE", "NUMERO_LITERAL", "IDENTIFICADOR_INVALIDO", "STRING_LITERAL", "LOGICO_LITERAL", "PALAVRA_CHAVE", "IDENTIFICADOR", "OP", "LPAREN", "RPAREN", "LBRACKET", "RBRACKET", "LBRACE", "RBRACE", "COMMA", "SEMICOLON", "COLON", "DOT"
     ]
@@ -308,19 +309,19 @@ def tokenize(dfa: Dict[str, Any], text: str):
                 last_accept_tok = accepts[cur_state]
             i += 1
         if last_accept_pos < 0:
-            # Compute human-friendly line/column and show snippet with caret
+            # calcula linha/coluna amigáveis e mostra trecho com caret
             err_pos = pos
             ch = text[pos]
             line = text.count('\n', 0, err_pos) + 1
-            # column: distance from previous newline (1-based)
+            # coluna: distância a partir da nova linha anterior (1-based)
             last_nl = text.rfind('\n', 0, err_pos)
             col = err_pos - last_nl
-            # snippet around error
+            # trecho ao redor do erro
             start = max(0, err_pos - 40)
             end = min(N, err_pos + 40)
             snippet = text[start:end].replace('\t', '\\t')
             pointer = ' ' * (err_pos - start) + '^'
-            # Try to find an earlier non-ASCII or likely-invalid character in the snippet
+            # tenta localizar um caractere não-ASCII ou possivelmente inválido no trecho
             suspect_pos = None
             for i in range(start, err_pos):
                 try:
@@ -344,7 +345,7 @@ def tokenize(dfa: Dict[str, Any], text: str):
     return out
 
 
-# convenience: build and expose tokenizer
+# conveniência: constrói e expõe o tokenizador
 _default_dfa = build_lexer_dfa()
 
 def tokenize_text(text: str):
